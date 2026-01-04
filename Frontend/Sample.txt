@@ -1,119 +1,131 @@
-import React, { useState } from "react";
+import React from "react";
 
-const LoginPage = () => {
+const ActionButtons = () => (
+  <div className="mt-4 flex gap-3">
+    <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+      Add
+    </button>
+    <button className="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition text-sm">
+      Remove
+    </button>
+    <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition text-sm">
+      Details
+    </button>
+  </div>
+);
 
-  const[role, setRole] = useState("student");
-
+const Admin_Dashboard = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#eaf4ff] px-4">
-      
-      {/* Main Wrapper */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full">
+    <div className="min-h-screen bg-gray-100 p-6">
 
-        {/* Admin */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 flex flex-col justify-between">
-          <div>
-            <div className="h-40 bg-[#bde0fe] rounded-2xl flex items-center justify-center mb-6">
-              <span className="text-4xl font-bold text-blue-700">ADMIN</span>
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        {/* LEFT: Admin Profile */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+
+          {/* Profile Section */}
+          <div className="flex flex-col items-center">
+            <div className="h-28 w-28 rounded-full bg-blue-200 flex items-center justify-center text-3xl font-bold text-blue-700 mb-4">
+              A
             </div>
-            <h2 className="text-xl text-center font-semibold mb-1"><i>Admin</i></h2>
+            <h2 className="text-xl font-semibold">Admin Name</h2>
+            <p className="text-sm text-gray-500">admin@example.com</p>
           </div>
 
-          <div className="space-y-3">
-            <button
-              onClick={() => setRole("student")}
-              className={`w-full py-2 rounded-lg font-medium transition ${
-                role === "student"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Login
-            </button>
+          {/* Admin Details */}
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="Admin Name"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                placeholder="admin@example.com"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="********"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
           </div>
 
-          <button
-            onClick={() => setRole("teacher")}
-            className={`w-full py-2 rounded-lg font-medium transition ${
-              role === "teacher"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-            >
-              Forgot Password
+          <button className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            Update Profile
           </button>
         </div>
 
-        {/* Teacher */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 flex flex-col justify-between">
-          <div>
-            <div className="h-40 bg-[#bde0fe] rounded-2xl flex items-center justify-center mb-6">
-              <span className="text-4xl font-bold text-blue-700">TEACHER</span>
-            </div>
-            <h2 className="text-xl text-center font-semibold mb-1"><i>Teacher</i></h2>
-          </div>
-          
-          <div className="space-y-3">
-            <button
-              onClick={() => setRole("student")}
-              className={`w-full py-2 rounded-lg font-medium transition ${
-                role === "student"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Login
-            </button>
+        {/* RIGHT: Management Sections */}
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+          {/* Students */}
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
+            <p className="text-sm text-gray-500">
+              Manage student records and profiles
+            </p>
+            <ActionButtons />
           </div>
 
-          <button
-              onClick={() => setRole("teacher")}
-              className={`w-full py-2 rounded-lg font-medium transition ${
-                role === "teacher"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Forgot Password
-            </button>
-        </div>
-
-        {/* Student */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 flex flex-col justify-between">
-          <div>
-            <div className="h-40 bg-[#bde0fe] rounded-2xl flex items-center justify-center mb-6">
-              <span className="text-4xl font-bold text-blue-700">STUDENT</span>
-            </div>
-            <h2 className="text-xl text-center font-semibold mb-1"><i>Student</i></h2>
+          {/* Teachers */}
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Teachers</h3>
+            <p className="text-sm text-gray-500">
+              Add or manage teachers
+            </p>
+            <ActionButtons />
           </div>
 
-          <div className="space-y-3">
-            <button
-              onClick={() => setRole("student")}
-              className={`w-full py-2 rounded-lg font-medium transition ${
-                role === "student"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Login
-            </button>
-
-            <button
-              onClick={() => setRole("teacher")}
-              className={`w-full py-2 rounded-lg font-medium transition ${
-                role === "teacher"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Forgot Password
-            </button>
+          {/* Courses */}
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Courses</h3>
+            <p className="text-sm text-gray-500">
+              Create and organize courses
+            </p>
+            <ActionButtons />
           </div>
+
+          {/* Classes */}
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Classes</h3>
+            <p className="text-sm text-gray-500">
+              Assign students and teachers
+            </p>
+            <ActionButtons />
+          </div>
+
+          {/* Notices */}
+          <div className="bg-white rounded-2xl shadow-md p-6 sm:col-span-2 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Notices</h3>
+            <p className="text-sm text-gray-500">
+              Publish announcements for students and teachers
+            </p>
+            <ActionButtons/>
+          </div>
+
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default Admin_Dashboard;

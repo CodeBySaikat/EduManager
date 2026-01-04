@@ -1,0 +1,56 @@
+qSpDnuSDcKpo0IcN
+saikatmallik1103_db_user
+
+Saikat123
+
+http://localhost:8000
+
+
+//Admin
+
+//register
+{
+    "statusCode": 200,
+    "data": {
+        "_id": "695a9ef3f62bd12de0354a45",
+        "adminId": "2345",
+        "name": "Mallik",
+        "email": "mallik@gmail.com",
+        "__v": 0
+    },
+    "message": "User Registerd Sucessfully.",
+    "success": true
+}
+
+{
+    "statusCode": 200,
+    "data": {
+        "_id": "695a9f54f62bd12de0354a49",
+        "adminId": "1234",
+        "name": "Saikat",
+        "email": "saikat@gmail.com",
+        "__v": 0
+    },
+    "message": "User Registerd Sucessfully.",
+    "success": true
+}
+
+//login
+
+{
+    "statusCode": 200,
+    "data": {
+        "admin": {
+            "_id": "695a9f54f62bd12de0354a49",
+            "adminId": "1234",
+            "name": "Saikat",
+            "email": "saikat@gmail.com",
+            "__v": 0
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTVhOWY1NGY2MmJkMTJkZTAzNTRhNDkiLCJhZG1pbklkIjoiMTIzNCIsIm5hbWUiOiJTYWlrYXQiLCJlbWFpbCI6InNhaWthdEBnbWFpbC5jb20iLCJpYXQiOjE3Njc1NDY4NTcsImV4cCI6MTc2NzYzMzI1N30.RP4UyUVZeCXAkYBts0qH9R2Kc7UewskClP5cApjEpb8",
+        
+        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTVhOWY1NGY2MmJkMTJkZTAzNTRhNDkiLCJhZG1pbklkIjoiMTIzNCIsIm5hbWUiOiJTYWlrYXQiLCJlbWFpbCI6InNhaWthdEBnbWFpbC5jb20iLCJpYXQiOjE3Njc1NDY4NTcsImV4cCI6MTc2ODQxMDg1N30.sXFd68msCnq4JyXspmb2m8SMp74rQTazobFWKTD-83U"
+    },
+    "message": "Admin Logged In Successfully",
+    "success": true
+}

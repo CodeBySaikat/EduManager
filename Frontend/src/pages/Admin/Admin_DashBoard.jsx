@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import { useState } from "react";
 
 const ActionButtons = () => (
   <div className="mt-4 flex gap-3">
@@ -15,6 +16,45 @@ const ActionButtons = () => (
 );
 
 const Admin_Dashboard = () => {
+
+  const [adminId, setAdminId] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const[error, setError] = useState(null);
+  const[loading, setLoading] = useState(false);
+
+  //handle resister
+  const handleRegister = async() => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.post(
+        'http://localhost:8000/admin/register',
+        {
+          adminId,
+          name,
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+
+    } catch (error) {
+      setError(error.response?.data?.message || "login Failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
@@ -29,20 +69,34 @@ const Admin_Dashboard = () => {
             <div className="h-28 w-28 rounded-full bg-blue-200 flex items-center justify-center text-3xl font-bold text-blue-700 mb-4">
               A
             </div>
-            <h2 className="text-xl font-semibold">Admin Name</h2>
-            <p className="text-sm text-gray-500">admin@example.com</p>
+            <h2 className="text-xl font-semibold">Admin Registration</h2>
+            <p className="text-sm text-gray-500">Create admin account</p>
           </div>
 
-          {/* Admin Details */}
+          {/* Admin Register Form */}
           <div className="mt-6 space-y-4">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Admin ID
+              </label>
+              <input
+                type="text"
+                placeholder="ADM001"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setAdminId(e.target.value)}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Full Name
               </label>
               <input
                 type="text"
-                placeholder="Admin Name"
+                placeholder="Enter admin name"
                 className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -52,8 +106,9 @@ const Admin_Dashboard = () => {
               </label>
               <input
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="admin@email.com"
                 className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -63,67 +118,75 @@ const Admin_Dashboard = () => {
               </label>
               <input
                 type="password"
-                placeholder="********"
+                placeholder="Create password"
                 className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
           </div>
 
-          <button className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-            Update Profile
-          </button>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+            }}>
+
+            <button 
+            type="register"
+            disabled={loading}
+            className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+            {loading ? "Registering..." : "Register"}
+            </button>
+          </form>
         </div>
 
         {/* RIGHT: Management Sections */}
         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-          {/* Students */}
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
-            <p className="text-sm text-gray-500">
-              Manage student records and profiles
-            </p>
+            <p className="text-sm text-gray-500">Manage student records and profiles</p>
             <ActionButtons />
           </div>
 
-          {/* Teachers */}
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Teachers</h3>
-            <p className="text-sm text-gray-500">
-              Add or manage teachers
-            </p>
+            <p className="text-sm text-gray-500">Add or manage teachers</p>
             <ActionButtons />
           </div>
 
-          {/* Courses */}
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Courses</h3>
-            <p className="text-sm text-gray-500">
-              Create and organize courses
-            </p>
+            <p className="text-sm text-gray-500">Create and organize courses</p>
             <ActionButtons />
           </div>
 
-          {/* Classes */}
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Classes</h3>
-            <p className="text-sm text-gray-500">
-              Assign students and teachers
-            </p>
+            <p className="text-sm text-gray-500">Assign students and teachers</p>
             <ActionButtons />
           </div>
 
-          {/* Notices */}
           <div className="bg-white rounded-2xl shadow-md p-6 sm:col-span-2 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Notices</h3>
             <p className="text-sm text-gray-500">
               Publish announcements for students and teachers
             </p>
-            <ActionButtons/>
+            <ActionButtons />
           </div>
 
         </div>
       </div>
+
+      {/* Logout Button */}
+      <div className="mt-10 flex justify-center">
+        <button className="px-10 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+          Logout
+        </button>
+      </div>
+
     </div>
   );
 };

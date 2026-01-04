@@ -1,14 +1,50 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 
 const LoginPage = () => {
   
+  const [adminId, setAdminId] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   //for login function
-  const handleLogin = () => {
+  const handleLogin = async(role) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      //fetch api
+      const response = await axios.post(
+        `http://localhost:8000/${role}/login`, 
+        {
+          adminId, 
+          password
+        },
+        {headers: {
+          "Content-Type": "application/json",
+        }}
+      );
+      console.log(response.data);
+      // return response.data;
+
+      //save token based on role
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("role", role);
+
+      //redirect based on role
+      if(role == "admin") window.location.href = "/admin/dashboard";
+      if(role == "teacher") window.location.href = "/teacher/dashboard";
+      if(role == "student") window.location.href = "/student/dashboard";
+
+    } catch (error) {
+      setError(error.response?.data?.message || "login Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  //for forgot function
-  function handleForgotPassword() {
-  }
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#eaf4ff] px-4">
@@ -21,29 +57,28 @@ const LoginPage = () => {
           </div>
 
           <input
+            className="w-full text-center px-4 py-2 border rounded-lg"
             type="email"
             placeholder="Admin Email"
-            className="w-full text-center px-4 py-2 border rounded-lg"
+            value={adminId}
+            onChange={(e) => setAdminId(e.target.value)}
           />
 
           <input
+            className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
-            className="w-full text-center px-4 py-2 border rounded-lg"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
+          {/* login button */}
           <button
-            onClick={() => handleLogin("admin", admin)}
+            onClick={() => handleLogin("admin")}
             className="w-full py-2 bg-blue-600 text-white rounded-lg"
           >
-            Login
-          </button>
-
-          <button
-            onClick={() => handleForgotPassword("admin", admin.email)}
-            className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
-          >
-            Forgot Password
+            {/* Login */}
+            {loading? "Login..." : "Login"}
           </button>
         </div>
 
@@ -60,23 +95,17 @@ const LoginPage = () => {
           />
 
           <input
+            className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
-            className="w-full text-center px-4 py-2 border rounded-lg"
           />
 
+          {/* login button */}
           <button
-            onClick={() => handleLogin("teacher", teacher)}
+            onClick={() => handleLogin("teacher")}
             className="w-full py-2 bg-blue-600 text-white rounded-lg"
           >
             Login
-          </button>
-
-          <button
-            onClick={() => handleForgotPassword("teacher", teacher.email)}
-            className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
-          >
-            Forgot Password
           </button>
         </div>
 
@@ -93,24 +122,25 @@ const LoginPage = () => {
           />
 
           <input
+            className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
-            className="w-full text-center px-4 py-2 border rounded-lg"
           />
 
+          {/* login button */}
           <button
-            onClick={() => handleLogin("student", student)}
+            onClick={() => handleLogin("student")}
             className="w-full py-2 bg-blue-600 text-white rounded-lg"
           >
             Login
           </button>
 
-          <button
+          {/* <button
             onClick={() => handleForgotPassword("student", student.email)}
             className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
           >
             Forgot Password
-          </button>
+          </button> */}
         </div>
 
       </div>
