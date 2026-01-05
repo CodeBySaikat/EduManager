@@ -58,8 +58,8 @@ const LoginPage = () => {
 
           <input
             className="w-full text-center px-4 py-2 border rounded-lg"
-            type="email"
-            placeholder="Admin Email"
+            type="adminId"
+            placeholder="Admin ID"
             value={adminId}
             onChange={(e) => setAdminId(e.target.value)}
           />
@@ -89,8 +89,8 @@ const LoginPage = () => {
           </div>
 
           <input
-            type="email"
-            placeholder="Teacher Email"
+            type="teacherId"
+            placeholder="Teacher ID"
             className="w-full text-center px-4 py-2 border rounded-lg"
           />
 
@@ -116,8 +116,8 @@ const LoginPage = () => {
           </div>
 
           <input
-            type="email"
-            placeholder="Student Email"
+            type="studentId"
+            placeholder="Student ID"
             className="w-full text-center px-4 py-2 border rounded-lg"
           />
 
@@ -134,13 +134,7 @@ const LoginPage = () => {
           >
             Login
           </button>
-
-          {/* <button
-            onClick={() => handleForgotPassword("student", student.email)}
-            className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
-          >
-            Forgot Password
-          </button> */}
+          
         </div>
 
       </div>
