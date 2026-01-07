@@ -1,10 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LandingPage = () => {
+
+  const navigate = useNavigate();
   
   const [adminId, setAdminId] = useState("");
-  const [password, setPassword] = useState("");
+  const [teacherId, setTeacherId] = useState("");
+  const [studentId, setStudentId] = useState("");
+
+  const [adminPassword, setAdminPassword] = useState("");
+  const [teacherPassword, setTeacherPassword] = useState("");
+  const [studentPassword, setStudentPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,28 +23,49 @@ const LoginPage = () => {
       setLoading(true);
       setError(null);
 
+      let payload = {};
+
+      //diff role payload
+      if(role === "admin") {
+        payload = {adminId: adminId, password: adminPassword};
+      } 
+      else if (role === "teacher") {
+        payload = {teacherId: teacherId, password: teacherPassword};
+      }
+      else if (role === "student") {
+        payload = {SID: studentId, password: studentPassword};
+      }
+
+      console.log("Role", role);
+      console.log("Payload", payload);
+
       //fetch api
       const response = await axios.post(
         `http://localhost:8000/${role}/login`, 
-        {
-          adminId, 
-          password
-        },
+        payload,
         {headers: {
           "Content-Type": "application/json",
         }}
       );
+
       console.log(response.data);
-      // return response.data;
+
+      const accessToken = response.data?.data?.accessToken;
+
+      if(!accessToken) {
+        setError("accessToken not received", accessToken);
+      };
+
+      console.log(accessToken);
 
       //save token based on role
-      localStorage.setItem("accessToken", response.data.accessToken);
-      localStorage.setItem("role", role);
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("activeRole", role);
 
-      //redirect based on role
-      if(role == "admin") window.location.href = "/admin/dashboard";
-      if(role == "teacher") window.location.href = "/teacher/dashboard";
-      if(role == "student") window.location.href = "/student/dashboard";
+      //clear navigation
+      if(role === "admin") navigate("/admin/dashboard");
+      if(role === "teacher") navigate("/teacher/dashboard");
+      if(role === "student") navigate("/student/dashboard");
 
     } catch (error) {
       setError(error.response?.data?.message || "login Failed");
@@ -68,8 +98,8 @@ const LoginPage = () => {
             className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
           />
 
           {/* login button */}
@@ -77,7 +107,6 @@ const LoginPage = () => {
             onClick={() => handleLogin("admin")}
             className="w-full py-2 bg-blue-600 text-white rounded-lg"
           >
-            {/* Login */}
             {loading? "Login..." : "Login"}
           </button>
         </div>
@@ -92,12 +121,16 @@ const LoginPage = () => {
             type="teacherId"
             placeholder="Teacher ID"
             className="w-full text-center px-4 py-2 border rounded-lg"
+            value={teacherId}
+            onChange={(e) => setTeacherId(e.target.value)}
           />
 
           <input
             className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
+            value={teacherPassword}
+            onChange={(e) => setTeacherPassword(e.target.value)}
           />
 
           {/* login button */}
@@ -119,12 +152,16 @@ const LoginPage = () => {
             type="studentId"
             placeholder="Student ID"
             className="w-full text-center px-4 py-2 border rounded-lg"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
           />
 
           <input
             className="w-full text-center px-4 py-2 border rounded-lg"
             type="password"
             placeholder="Password"
+            value={studentPassword}
+            onChange={(e) => setStudentPassword(e.target.value)}
           />
 
           {/* login button */}
@@ -132,7 +169,7 @@ const LoginPage = () => {
             onClick={() => handleLogin("student")}
             className="w-full py-2 bg-blue-600 text-white rounded-lg"
           >
-            Login
+            {loading? "Login..." : "Login"}
           </button>
           
         </div>
@@ -142,4 +179,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LandingPage;

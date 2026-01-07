@@ -1,19 +1,34 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const ActionButtons = () => (
-  <div className="mt-4 flex gap-3">
-    <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-      Add
-    </button>
-    <button className="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition text-sm">
-      Remove
-    </button>
-    <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition text-sm">
-      Details
-    </button>
-  </div>
-);
+
+
+const ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addStudent")}
+      >
+        Add
+      </button>
+
+      <button className="flex-1 bg-red-500 text-white py-2 rounded-lg">
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+
 
 const Admin_Dashboard = () => {
 
@@ -53,7 +68,7 @@ const Admin_Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -126,20 +141,14 @@ const Admin_Dashboard = () => {
 
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleRegister();
-            }}>
-
-            <button 
-            type="register"
-            disabled={loading}
-            className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-            {loading ? "Registering..." : "Register"}
-            </button>
-          </form>
+          <button
+          className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          onClick={handleRegister}
+          disabled={loading}
+          >
+            {loading? "Registering..." : "Register"}
+          </button>
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
 
         {/* RIGHT: Management Sections */}
@@ -148,7 +157,7 @@ const Admin_Dashboard = () => {
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
             <p className="text-sm text-gray-500">Manage student records and profiles</p>
-            <ActionButtons />
+            <ActionButtons/>
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
