@@ -1,0 +1,89 @@
+qSpDnuSDcKpo0IcN
+saikatmallik1103_db_user
+
+Saikat123
+
+http://localhost:8000
+
+
+//Admin
+
+//register
+{
+    "statusCode": 200,
+    "data": {
+        "_id": "695a9ef3f62bd12de0354a45",
+        "adminId": "2345",
+        "name": "Mallik",
+        "email": "mallik@gmail.com",
+        "__v": 0
+    },
+    "message": "User Registerd Sucessfully.",
+    "success": true
+}
+
+{
+    "statusCode": 200,
+    "data": {
+        "_id": "695a9f54f62bd12de0354a49",
+        "adminId": "1234",
+        "name": "Saikat",
+        "email": "saikat@gmail.com",
+        "__v": 0
+    },
+    "message": "User Registerd Sucessfully.",
+    "success": true
+}
+
+1111
+Pant
+Pant@gmail.com
+Pant1111
+
+//login
+
+
+
+//student
+
+{
+    "SID":"2210",
+    "name": "Push",
+    "gender":"Male",
+    "DOB":"2003-11-14",
+    "address":"Gaya",
+    "contactNumber":"8509800643",
+    "email":"push@gmail.com",
+    "password":"Push123",
+    "father": "Mohit",
+    "fatherContactNumber":"2030405060",
+    "mother": "Amrita",
+    "motherContactNumber": "1020304050",
+    "enrollmentDate": "2026-01-04",
+    "pendingFees":"2000"
+}
+
+sid - 123
+password - abc123
+
+
+//teacher
+
+{
+    "teacherName": "KK", 
+    "teacherId": "2026", 
+    "contact": "3040506070", 
+    "department": "Civil", 
+    "password": "KK2026"
+}
+
+
+
+
+
+
+
+teacherName, teacherId, contact, department, password
+
+9999
+p - 9999

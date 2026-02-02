@@ -129,3 +129,137 @@ const Admin_Dashboard = () => {
 };
 
 export default Admin_Dashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React from "react";
+
+const Add_Student = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="max-w-6xl w-full bg-white shadow-2xl rounded-lg grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+
+        {/* LEFT: FORM */}
+        <div className="p-8">
+          <h2 className="text-2xl font-semibold text-center mb-6">
+            STUDENT REGISTRATION FORM
+          </h2>
+
+          <div className="space-y-4">
+
+            <input
+              type="text"
+              placeholder="Student ID (SID)"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Student Name"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <select className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+
+            <input
+              type="date"
+              placeholder="Date of Birth"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Address"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Contact Number"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="email"
+              placeholder="Email Address"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Father's Name"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Father's Contact Number"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Mother's Name"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="text"
+              placeholder="Mother's Contact Number"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="date"
+              placeholder="Enrollment Date"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <input
+              type="number"
+              placeholder="Pending Fees"
+              className="w-full h-10 px-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <button className="w-full h-11 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+              SUBMIT
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Add_Student;

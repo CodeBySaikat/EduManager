@@ -3,74 +3,74 @@ import axios from "axios";
 
 const Add_Student = () => {
 
-    const[loading, setLoading] = useState(false);
-    const[error, setError] = useState(null);
+  const[loading, setLoading] = useState(false);
+  const[error, setError] = useState(null);
 
-    const[SID, setSID] = useState("");
-    const[name, setName] = useState("");
-    const[gender, SetGender] = useState("");
-    const[DOB, setDOB] = useState();
-    const[address, setAddress] = useState("");
-    const[contactNumber, SetContactNumber] = useState("");
-    const[email, setEmail] = useState("");
-    const[password, setPassword] = useState("");
-    const[father, setFather] = useState("");
-    const[mother, setMother] = useState("");
-    const[fatherContactNumber, setFatherContactNumber] = useState("");
-    const[motherContactNumber, setMotherContactNumber] = useState("");
-    const[enrollmentDate, setEnrollmentDate] = useState("");
-    const[pendingFees, setPendingFees] =useState("");
+  const[SID, setSID] = useState("");
+  const[name, setName] = useState("");
+  const[gender, SetGender] = useState("");
+  const[DOB, setDOB] = useState();
+  const[address, setAddress] = useState("");
+  const[contactNumber, SetContactNumber] = useState("");
+  const[email, setEmail] = useState("");
+  const[password, setPassword] = useState("");
+  const[father, setFather] = useState("");
+  const[mother, setMother] = useState("");
+  const[fatherContactNumber, setFatherContactNumber] = useState("");
+  const[motherContactNumber, setMotherContactNumber] = useState("");
+  const[enrollmentDate, setEnrollmentDate] = useState("");
+  const[pendingFees, setPendingFees] =useState("");
 
-    // Handle submit function
-    const handleSubmitFunction = async () => {
-        try {
-            setLoading(true);
-            setError(null);
+  // Handle submit function
+  const handleSubmitFunction = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-            const token = localStorage.getItem("token"); //for verify JWT token as a admin
+      const token = localStorage.getItem("token"); //for verify JWT token as a admin
 
-            console.log("Token", token);
+      console.log("Token", token);
 
-            if(!token) {
-                setError("Unauthorized: Please Login as Admin");
-                return;
-            };
+      if(!token) {
+        setError("Unauthorized: Please Login as Admin");
+        return;
+      };
 
-            const response = await axios.post(
-                'http://localhost:8000/admin/addStudent',
-                {
-                    SID,
-                    name,
-                    gender,
-                    DOB,
-                    address,
-                    contactNumber,
-                    email,
-                    password,
-                    father,
-                    fatherContactNumber,
-                    mother,
-                    motherContactNumber,
-                    enrollmentDate,
-                    pendingFees,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            console.log("Student added:", response.data);
-            alert("Student Registration Successfully")
-
-        } catch (error) {
-            setError(error.response?.data?.message || "Registration Failed");
-        } finally {
-            setLoading(false);
+    const response = await axios.post(
+        'http://localhost:8000/admin/addStudent',
+        {
+          SID,
+          name,
+          gender,
+          DOB,
+          address,
+          contactNumber,
+          email,
+          password,
+          father,
+          fatherContactNumber,
+          mother,
+          motherContactNumber,
+          enrollmentDate,
+          pendingFees,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
         }
-    };
+    );
+
+    console.log("Student added:", response.data);
+    alert("Student Registration Successfully")
+
+    } catch (error) {
+      setError(error.response?.data?.message || "Registration Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
     
 
   return (
@@ -190,7 +190,7 @@ const Add_Student = () => {
             >
               {loading? "Submitting..." : "Submit"}
             </button>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            {error && <p className="text-red-500 text-sm mt-2">{error.message}</p>}
           </div>
         </div>
 

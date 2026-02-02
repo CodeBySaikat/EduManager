@@ -3,8 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-
-const ActionButtons = () => {
+const Student_ActionButtons = () => {
   
   const navigate = useNavigate();
 
@@ -17,7 +16,10 @@ const ActionButtons = () => {
         Add
       </button>
 
-      <button className="flex-1 bg-red-500 text-white py-2 rounded-lg">
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+        onClick={() => {}}
+      >
         Remove
       </button>
 
@@ -27,6 +29,117 @@ const ActionButtons = () => {
     </div>
   );
 };
+
+
+
+const Teacher_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addTeacher")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+        
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+
+const Course_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addCourse")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+       
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+
+const Class_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addClass")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+const Notice_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addNotice")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
 
 
 
@@ -157,25 +270,25 @@ const Admin_Dashboard = () => {
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
             <p className="text-sm text-gray-500">Manage student records and profiles</p>
-            <ActionButtons/>
+            <Student_ActionButtons isStudent={true}/>
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Teachers</h3>
             <p className="text-sm text-gray-500">Add or manage teachers</p>
-            <ActionButtons />
+            <Teacher_ActionButtons />
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Courses</h3>
             <p className="text-sm text-gray-500">Create and organize courses</p>
-            <ActionButtons />
+            <Course_ActionButtons />
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Classes</h3>
             <p className="text-sm text-gray-500">Assign students and teachers</p>
-            <ActionButtons />
+            <Class_ActionButtons />
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 sm:col-span-2 hover:shadow-xl transition">
@@ -183,7 +296,7 @@ const Admin_Dashboard = () => {
             <p className="text-sm text-gray-500">
               Publish announcements for students and teachers
             </p>
-            <ActionButtons />
+            <Notice_ActionButtons />
           </div>
 
         </div>
