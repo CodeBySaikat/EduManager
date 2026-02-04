@@ -8,11 +8,11 @@ import Admin_Dashboard from "./pages/Admin/Admin_DashBoard.jsx";
 import Teacher_DashBoard from "./pages/Teacher/Teacher_DashBoard.jsx";
 import Student_DashBoard from "./pages/Student/Student_DashBoard.jsx";
 
-import Add_Student from './pages/Admin/student/add_student.jsx';
-import Add_Teacher from './pages/Admin/teacher/add_teacher.jsx';
-import Add_Course from './pages/Admin/course/add_course.jsx';
-import Add_Class from './pages/Admin/class/add_class.jsx';
-import Add_Notice from './pages/Admin/notice/add_notice.jsx';
+import Add_Student from './pages/Admin/add_student.jsx';
+import Add_Teacher from './pages/Admin/add_teacher.jsx';
+import Add_Course from './pages/Admin/add_course.jsx';
+import Add_Class from './pages/Admin/add_class.jsx';
+import Add_Notice from './pages/Admin/add_notice.jsx';
 
 
 import Admin_Protected_Route from './store/Admin_Protected_Route.jsx';

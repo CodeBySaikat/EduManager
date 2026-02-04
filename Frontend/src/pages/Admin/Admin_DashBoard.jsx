@@ -3,32 +3,36 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-const Student_ActionButtons = () => {
+import Student_ActionButtons from "../Helper/student_helper.jsx";
+
+
+
+// const Student_ActionButtons = () => {
   
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
 
-  return (
-    <div className="mt-4 flex gap-3">
-      <button
-        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-        onClick={() => navigate("/admin/addStudent")}
-      >
-        Add
-      </button>
+//   return (
+//     <div className="mt-4 flex gap-3">
+//       <button
+//         className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+//         onClick={() => navigate("/admin/addStudent")}
+//       >
+//         Add
+//       </button>
 
-      <button 
-        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-        onClick={() => {}}
-      >
-        Remove
-      </button>
+//       <button 
+//         className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+//         onClick={() => {}}
+//       >
+//         Remove
+//       </button>
 
-      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
-        Details
-      </button>
-    </div>
-  );
-};
+//       <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+//         Details
+//       </button>
+//     </div>
+//   );
+// };
 
 
 
@@ -270,7 +274,7 @@ const Admin_Dashboard = () => {
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
             <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
             <p className="text-sm text-gray-500">Manage student records and profiles</p>
-            <Student_ActionButtons isStudent={true}/>
+            <Student_ActionButtons />
           </div>
 
           <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
