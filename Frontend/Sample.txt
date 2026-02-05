@@ -263,3 +263,666 @@ const Add_Student = () => {
 };
 
 export default Add_Student;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const Student_ActionButtons = () => {
+
+  const navigate = useNavigate();
+
+  const [showRemove, setShowRemove] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const [sid, setSid] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const [student, setStudent] = useState(null);
+
+  // ---------------- REMOVE STUDENT ----------------
+  const handleRemoveStudent = async () => {
+    if (!sid) return;
+
+    try {
+      setLoading(true);
+      setMessage("");
+
+      const token = localStorage.getItem("token");
+
+      await axios.delete(
+        `http://localhost:8000/admin/removeStudent/${sid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setMessage("Student deleted successfully.");
+
+      setShowRemove(false);  // close popup
+      setShowToast(true); //show center message sucessfully
+
+      //auto hide toast after 2 sec
+      setTimeout(() => {
+        setShowToast(false);
+      }, 2000) 
+
+      setSid("");
+
+    } catch (error) {
+      setMessage(
+        error?.response?.data?.message || "Failed to delete student"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  // ---------------- GET STUDENT DETAILS ----------------
+  const handleGetDetails = async () => {
+    if (!sid) return;
+
+    try {
+      setLoading(true);
+      setMessage("");
+      setStudent(null);
+
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        `http://localhost:8000/admin/fetch/studentDetails/${sid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      setStudent(res.data);
+
+    } catch (error) {
+      setMessage(
+        error?.response?.data?.message || "Student not found"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return (
+    <>
+      {/* Buttons */}
+      <div className="mt-4 flex gap-3">
+
+        <button
+          className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+          onClick={() => navigate("/admin/addStudent")}
+        >
+          Add
+        </button>
+
+        <button
+          className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+          onClick={() => {
+            setSid("");
+            setMessage("");
+            setShowRemove(true);
+          }}
+        >
+          Remove
+        </button>
+
+        <button
+          className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg"
+          onClick={() => {
+            setSid("");
+            setStudent(null);
+            setMessage("");
+            setShowDetails(true);
+          }}
+        >
+          Details
+        </button>
+      </div>
+
+
+      {/* ---------------- REMOVE MODAL ---------------- */}
+      {showRemove && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+          <div className="bg-white p-6 rounded-lg w-87.5">
+            <h2 className="text-lg font-semibold mb-4 text-center">
+              Remove Student
+            </h2>
+
+            <input
+              type="text"
+              placeholder="Enter Student ID (SID)"
+              className="w-full border p-2 rounded mb-4"
+              value={sid}
+              onChange={(e) => setSid(e.target.value)}
+            />
+
+            {message && (
+              <p className="text-sm text-center mb-3 text-green-600">
+                {message}
+              </p>
+            )}
+
+            {/* ✅ NEW : center success message after delete */}
+            {showToast && (
+              <div className="fixed inset-0 flex items-center justify-center z-999">
+                <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg">
+                  Student deleted successfully
+                </div>
+              </div>
+            )}
+
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleRemoveStudent}
+                disabled={loading}
+                className="flex-1 bg-red-500 text-white py-2 rounded"
+              >
+                {loading ? "Deleting..." : "Submit"}
+              </button>
+
+              <button
+                onClick={() => setShowRemove(false)}
+                className="flex-1 bg-gray-200 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* ---------------- DETAILS MODAL ---------------- */}
+      {showDetails && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+          <div className="bg-white p-6 rounded-lg w-125 max-h-[90vh] overflow-y-auto">
+
+            <h2 className="text-lg font-semibold mb-4 text-center">
+              Student Details
+            </h2>
+
+            {!student && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter Student ID (SID)"
+                  className="w-full border p-2 rounded mb-4"
+                  value={sid}
+                  onChange={(e) => setSid(e.target.value)}
+                />
+
+                {message && (
+                  <p className="text-sm text-center mb-3 text-red-600">
+                    {message}
+                  </p>
+                )}
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleGetDetails}
+                    disabled={loading}
+                    className="flex-1 bg-blue-600 text-white py-2 rounded"
+                  >
+                    {loading ? "Loading..." : "Submit"}
+                  </button>
+
+                  <button
+                    onClick={() => setShowDetails(false)}
+                    className="flex-1 bg-gray-200 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
+
+
+            {/* Student data */}
+            {student && (
+              <div className="text-sm space-y-2">
+
+                <p><b>SID:</b> {student.SID}</p>
+                <p><b>Name:</b> {student.name}</p>
+                <p><b>Gender:</b> {student.gender}</p>
+                <p><b>DOB:</b> {student.DOB}</p>
+                <p><b>Address:</b> {student.address}</p>
+                <p><b>Contact Number:</b> {student.contactNumber}</p>
+                <p><b>Email:</b> {student.email}</p>
+                <p><b>Password:</b> {student.password}</p>
+                <p><b>Father:</b> {student.father}</p>
+                <p><b>Father Contact:</b> {student.fatherContactNumber}</p>
+                <p><b>Mother:</b> {student.mother}</p>
+                <p><b>Mother Contact:</b> {student.motherContactNumber}</p>
+                <p><b>Enrollment Date:</b> {student.enrollmentDate}</p>
+                <p><b>Pending Fees:</b> {student.pendingFees}</p>
+
+                <div className="pt-4">
+                  <button
+                    onClick={() => setShowDetails(false)}
+                    className="w-full bg-gray-200 py-2 rounded"
+                  >
+                    Close
+                  </button>
+                </div>
+
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+    </>
+  );
+};
+
+export default Student_ActionButtons;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##admin page old------------------------------------------->
+
+
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+
+import Student_ActionButtons from "../Helper/student_helper.jsx";
+import Teacher_ActionButtons from "../Helper/teacher_helper.jsx";
+
+
+
+// const Student_ActionButtons = () => {
+  
+//   const navigate = useNavigate();
+
+//   return (
+//     <div className="mt-4 flex gap-3">
+//       <button
+//         className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+//         onClick={() => navigate("/admin/addStudent")}
+//       >
+//         Add
+//       </button>
+
+//       <button 
+//         className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+//         onClick={() => {}}
+//       >
+//         Remove
+//       </button>
+
+//       <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+//         Details
+//       </button>
+//     </div>
+//   );
+// };
+
+
+
+// const Teacher_ActionButtons = () => {
+  
+//   const navigate = useNavigate();
+
+//   return (
+//     <div className="mt-4 flex gap-3">
+//       <button
+//         className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+//         onClick={() => navigate("/admin/addTeacher")}
+//       >
+//         Add
+//       </button>
+
+//       <button 
+//         className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+        
+//       >
+//         Remove
+//       </button>
+
+//       <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+//         Details
+//       </button>
+//     </div>
+//   );
+// };
+
+
+const Course_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addCourse")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+       
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+
+const Class_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addClass")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+const Notice_ActionButtons = () => {
+  
+  const navigate = useNavigate();
+
+  return (
+    <div className="mt-4 flex gap-3">
+      <button
+        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
+        onClick={() => navigate("/admin/addNotice")}
+      >
+        Add
+      </button>
+
+      <button 
+        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
+      >
+        Remove
+      </button>
+
+      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
+        Details
+      </button>
+    </div>
+  );
+};
+
+
+
+
+const Admin_Dashboard = () => {
+
+  const [adminId, setAdminId] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const[error, setError] = useState(null);
+  const[loading, setLoading] = useState(false);
+
+  //handle resister
+  const handleRegister = async() => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await axios.post(
+        'http://localhost:8000/admin/register',
+        {
+          adminId,
+          name,
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+
+    } catch (error) {
+      setError(error.response?.data?.message || "login Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        {/* LEFT: Admin Profile */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+
+          {/* Profile Section */}
+          <div className="flex flex-col items-center">
+            <div className="h-28 w-28 rounded-full bg-blue-200 flex items-center justify-center text-3xl font-bold text-blue-700 mb-4">
+              A
+            </div>
+            <h2 className="text-xl font-semibold">Admin Registration</h2>
+            <p className="text-sm text-gray-500">Create admin account</p>
+          </div>
+
+          {/* Admin Register Form */}
+          <div className="mt-6 space-y-4">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Admin ID
+              </label>
+              <input
+                type="text"
+                placeholder="ADM001"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setAdminId(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter admin name"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                placeholder="admin@email.com"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Create password"
+                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+          </div>
+
+          <button
+          className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          onClick={handleRegister}
+          disabled={loading}
+          >
+            {loading? "Registering..." : "Register"}
+          </button>
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        </div>
+
+        {/* RIGHT: Management Sections */}
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
+            <p className="text-sm text-gray-500">Manage student records and profiles</p>
+            <Student_ActionButtons />
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Teachers</h3>
+            <p className="text-sm text-gray-500">Add or manage teachers</p>
+            <Teacher_ActionButtons />
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Courses</h3>
+            <p className="text-sm text-gray-500">Create and organize courses</p>
+            <Course_ActionButtons />
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Classes</h3>
+            <p className="text-sm text-gray-500">Assign students and teachers</p>
+            <Class_ActionButtons />
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-md p-6 sm:col-span-2 hover:shadow-xl transition">
+            <h3 className="text-lg text-center font-semibold mb-2">Notices</h3>
+            <p className="text-sm text-gray-500">
+              Publish announcements for students and teachers
+            </p>
+            <Notice_ActionButtons />
+          </div>
+
+        </div>
+      </div>
+
+      {/* Logout Button */}
+      <div className="mt-10 flex justify-center">
+        <button className="px-10 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+          Logout
+        </button>
+      </div>
+
+    </div>
+  );
+};
+
+export default Admin_Dashboard;

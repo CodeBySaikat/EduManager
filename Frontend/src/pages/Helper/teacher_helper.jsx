@@ -2,27 +2,27 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Student_ActionButtons = () => {
+const Teacher_ActionButtons = () => {
 
   const navigate = useNavigate();
 
   const [showRemove, setShowRemove] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const [sid, setSid] = useState("");
+  const [teacherId, setTeacherId] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [student, setStudent] = useState(null);
+  const [teacher, setTeacher] = useState(null);
 
-  // ✅ NEW
+  // NEW
   const [showToast, setShowToast] = useState(false);
 
 
-  // ---------------- REMOVE STUDENT ----------------
-  const handleRemoveStudent = async () => {
-    if (!sid) return;
+  // ---------------- REMOVE TEACHER ----------------
+  const handleRemoveTeacher = async () => {
+    if (!teacherId) return;
 
     try {
       setLoading(true);
@@ -31,7 +31,7 @@ const Student_ActionButtons = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:8000/admin/removeStudent/${sid}`,
+        `http://localhost:8000/admin/removeTeacher/${teacherId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -39,22 +39,22 @@ const Student_ActionButtons = () => {
         }
       );
 
-      // ✅ close modal
+      // close modal
       setShowRemove(false);
 
-      // ✅ show success message in center
+      // show success message in center
       setShowToast(true);
 
-      // ✅ auto hide after 1s
+      //auto hide after 1s
       setTimeout(() => {
         setShowToast(false);
       }, 1000);
 
-      setSid("");
+      setTeacherId("");
 
     } catch (error) {
       setMessage(
-        error?.response?.data?.message || "Failed to delete student"
+        error?.response?.data?.message || "Failed to delete teacher"
       );
     } finally {
       setLoading(false);
@@ -62,19 +62,19 @@ const Student_ActionButtons = () => {
   };
 
 
-  // ---------------- GET STUDENT DETAILS ----------------
+  // ---------------- GET TEACHER DETAILS ----------------
   const handleGetDetails = async () => {
-    if (!sid) return;
+    if (!teacherId) return;
 
     try {
       setLoading(true);
       setMessage("");
-      setStudent(null);
+      setTeacher(null);
 
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `http://localhost:8000/admin/fetch/studentDetails/${sid}`,
+        `http://localhost:8000/admin/fetch/teacherDetails/${teacherId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -82,11 +82,11 @@ const Student_ActionButtons = () => {
         }
       );
 
-      setStudent(res.data.data.student);
+      setTeacher(res.data.data.teacher);
 
     } catch (error) {
       setMessage(
-        error?.response?.data?.message || "Student not found"
+        error?.response?.data?.message || "Teacher not found"
       );
     } finally {
       setLoading(false);
@@ -101,7 +101,7 @@ const Student_ActionButtons = () => {
 
         <button
           className="flex-1 bg-green-200 text-green-800 py-1.5 rounded-md hover:bg-green-300 transition text-sm"
-          onClick={() => navigate("/admin/addStudent")}
+          onClick={() => navigate("/admin/addTeacher")}
         >
           Add
         </button>
@@ -109,7 +109,7 @@ const Student_ActionButtons = () => {
         <button
           className="flex-1 bg-red-200 text-red-800 py-1.5 rounded-md hover:bg-red-300 transition text-sm"
           onClick={() => {
-            setSid("");
+            setTeacherId("");
             setMessage("");
             setShowRemove(true);
           }}
@@ -120,8 +120,8 @@ const Student_ActionButtons = () => {
         <button
           className="flex-1 bg-gray-200 text-gray-700 py-1.5 rounded-md hover:bg-gray-300 transition text-sm"
           onClick={() => {
-            setSid("");
-            setStudent(null);
+            setTeacherId("");
+            setTeacher(null);
             setMessage("");
             setShowDetails(true);
           }}
@@ -138,15 +138,15 @@ const Student_ActionButtons = () => {
           <div className="bg-white p-6 rounded-lg w-87.5">
 
             <h2 className="text-lg font-semibold mb-4 text-center">
-              Remove Student
+              Remove Teacher
             </h2>
 
             <input
               type="text"
-              placeholder="Enter Student ID (SID)"
+              placeholder="Enter Teacher ID (TID)"
               className="w-full border p-2 rounded mb-4"
-              value={sid}
-              onChange={(e) => setSid(e.target.value)}
+              value={teacherId}
+              onChange={(e) => setTeacherId(e.target.value)}
             />
 
             {message && (
@@ -157,7 +157,7 @@ const Student_ActionButtons = () => {
 
             <div className="flex gap-3">
               <button
-                onClick={handleRemoveStudent}
+                onClick={handleRemoveTeacher}
                 disabled={loading}
                 className="flex-1 bg-red-500 text-white py-2 rounded"
               >
@@ -177,12 +177,12 @@ const Student_ActionButtons = () => {
       )}
 
 
-      {/* ✅ CHANGED – blur background for success message */}
+      {/* CHANGED – blur background for success message */}
       {showToast && (
         <div className="fixed inset-0 z-999 flex items-center justify-center bg-black/30 backdrop-blur-xs">
           
           <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg">
-            Student deleted successfully
+            Teacher deleted successfully
           </div>
 
         </div>
@@ -196,17 +196,17 @@ const Student_ActionButtons = () => {
           <div className="bg-white p-6 rounded-lg w-125 max-h-[90vh] overflow-y-auto">
 
             <h2 className="text-lg font-semibold mb-4 text-center">
-              Student Details
+              Teacher Details
             </h2>
 
-            {!student && (
+            {!teacher && (
               <>
                 <input
                   type="text"
-                  placeholder="Enter Student ID (SID)"
+                  placeholder="Enter Teacher ID (TID)"
                   className="w-full border p-2 rounded mb-4"
-                  value={sid}
-                  onChange={(e) => setSid(e.target.value)}
+                  value={teacherId}
+                  onChange={(e) => setTeacherId(e.target.value)}
                 />
 
                 {message && (
@@ -235,27 +235,15 @@ const Student_ActionButtons = () => {
             )}
 
 
-            {student && (
+            {teacher && (
               <div className="text-sm space-y-2">
 
-                <p><b>SID:</b> {student.SID}</p>
-                <p><b>Name:</b> {student.name}</p>
-                <p><b>Gender:</b> {student.gender}</p>
-                <p><b>DOB:</b> {student.DOB}</p>
-                <p><b>Address:</b> {student.address}</p>
-                <p><b>Contact Number:</b> {student.contactNumber}</p>
-                <p><b>Email:</b> {student.email}</p>
-                {/* <p><b>Password:</b> {student.password}</p> */}
-                <p><b>Father:</b> {student.father}</p>
-                <p><b>Father Contact:</b> {student.fatherContactNumber}</p>
-                <p><b>Mother:</b> {student.mother}</p>
-                <p><b>Mother Contact:</b> {student.motherContactNumber}</p>
-                <p><b>Enrollment Date:</b> {student.enrollmentDate}</p>
-                <p><b>Pending Fees:</b> {student.pendingFees}</p>
-                <p><b>Attendance:</b> {student.attendance}</p>
-                <p><b>Grade:</b> {student.grade}</p>
-                <p><b>Current Class:</b> {student.currentClass}</p>
-
+                <p><b>TeacherID:</b> {teacher.teacherId}</p>
+                <p><b>Teacher Name:</b> {teacher.teacherName}</p>
+                <p><b>Contact Number:</b> {teacher.contact}</p>
+                <p><b>Department:</b> {teacher.department}</p>
+                {/* <p><b>Password:</b> {teacher.password}</p> */}
+                
                 <div className="pt-4">
                   <button
                     onClick={() => setShowDetails(false)}
@@ -277,4 +265,4 @@ const Student_ActionButtons = () => {
   );
 };
 
-export default Student_ActionButtons;
+export default Teacher_ActionButtons;

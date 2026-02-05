@@ -1,143 +1,39 @@
-import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 
 import Student_ActionButtons from "../Helper/student_helper.jsx";
+import Teacher_ActionButtons from "../Helper/teacher_helper.jsx";
+import Class_ActionButtons from "../Helper/class_helper.jsx";
 
 
 
-// const Student_ActionButtons = () => {
-  
-//   const navigate = useNavigate();
-
-//   return (
-//     <div className="mt-4 flex gap-3">
-//       <button
-//         className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-//         onClick={() => navigate("/admin/addStudent")}
-//       >
-//         Add
-//       </button>
-
-//       <button 
-//         className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-//         onClick={() => {}}
-//       >
-//         Remove
-//       </button>
-
-//       <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
-//         Details
-//       </button>
-//     </div>
-//   );
-// };
-
-
-
-const Teacher_ActionButtons = () => {
-  
+// ReuseAble component for the buttons under each section
+const Active_buttons = ({ addPath, removePath, detailsPath }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-4 flex gap-3">
+    <div className="px-4 pb-3 pt-2 flex gap-2">
       <button
-        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-        onClick={() => navigate("/admin/addTeacher")}
+        className="flex-1 bg-green-200 text-green-800 py-1.5 rounded-md hover:bg-green-300 transition text-sm"
+        onClick={() => navigate(addPath)}
       >
         Add
       </button>
 
-      <button 
-        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-        
-      >
-        Remove
-      </button>
-
-      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
-        Details
-      </button>
-    </div>
-  );
-};
-
-
-const Course_ActionButtons = () => {
-  
-  const navigate = useNavigate();
-
-  return (
-    <div className="mt-4 flex gap-3">
       <button
-        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-        onClick={() => navigate("/admin/addCourse")}
-      >
-        Add
-      </button>
-
-      <button 
-        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-       
+        className="flex-1 bg-red-200 text-red-800 py-1.5 rounded-md hover:bg-red-300 transition text-sm"
+        onClick={() => navigate(removePath)}
       >
         Remove
       </button>
 
-      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
-        Details
-      </button>
-    </div>
-  );
-};
-
-
-const Class_ActionButtons = () => {
-  
-  const navigate = useNavigate();
-
-  return (
-    <div className="mt-4 flex gap-3">
       <button
-        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-        onClick={() => navigate("/admin/addClass")}
+        className="flex-1 bg-gray-200 text-gray-700 py-1.5 rounded-md hover:bg-gray-300 transition text-sm"
+        onClick={() => navigate(detailsPath)}
       >
-        Add
-      </button>
-
-      <button 
-        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-      >
-        Remove
-      </button>
-
-      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
-        Details
-      </button>
-    </div>
-  );
-};
-
-const Notice_ActionButtons = () => {
-  
-  const navigate = useNavigate();
-
-  return (
-    <div className="mt-4 flex gap-3">
-      <button
-        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition text-sm"
-        onClick={() => navigate("/admin/addNotice")}
-      >
-        Add
-      </button>
-
-      <button 
-        className="flex-1 bg-red-500 text-white py-2 rounded-lg"
-      >
-        Remove
-      </button>
-
-      <button className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg">
         Details
       </button>
     </div>
@@ -147,8 +43,27 @@ const Notice_ActionButtons = () => {
 
 
 
+
+
+// Main dashboard component
 const Admin_Dashboard = () => {
+  const navigate = useNavigate();
 
+  //for dropdown menus
+  const [open, setOpen] = useState({
+    student: false,
+    teacher: false,
+    class: false,
+    course: false,
+    notice: false,
+  });
+
+  const toggle = (key) =>
+  setOpen((p) => ({ ...p, [key]: !p[key] }));
+
+
+
+  //handle resister new admin
   const [adminId, setAdminId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -156,6 +71,7 @@ const Admin_Dashboard = () => {
 
   const[error, setError] = useState(null);
   const[loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(null);
 
   //handle resister
   const handleRegister = async() => {
@@ -179,140 +95,355 @@ const Admin_Dashboard = () => {
       );
 
       console.log(response.data);
+      // alert("Admin registered successfully!");
+      setSuccess(true);
+
+      // Clear form
+      setAdminId("");
+      setName("");
+      setEmail("");
+      setPassword("");
 
     } catch (error) {
-      setError(error.response?.data?.message || "login Failed");
+      setError(error.response?.data?.message || "Registration Failed");
     } finally {
       setLoading(false);
     }
   };
 
+
+
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen flex bg-slate-100 relative">
 
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ✅ CHANGED – success popup + blur */}
+      {success && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
 
-        {/* LEFT: Admin Profile */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="relative bg-white rounded-xl shadow-lg p-6 w-75 text-center">
+            <h3 className="text-lg font-semibold text-green-600">
+              Admin Registered Successfully
+            </h3>
 
-          {/* Profile Section */}
-          <div className="flex flex-col items-center">
-            <div className="h-28 w-28 rounded-full bg-blue-200 flex items-center justify-center text-3xl font-bold text-blue-700 mb-4">
-              A
-            </div>
-            <h2 className="text-xl font-semibold">Admin Registration</h2>
-            <p className="text-sm text-gray-500">Create admin account</p>
+            <button
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+              onClick={() => setSuccess(false)}
+            >
+              OK
+            </button>
           </div>
+        </div>
+      )}
 
-          {/* Admin Register Form */}
-          <div className="mt-6 space-y-4">
 
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Admin ID
-              </label>
-              <input
-                type="text"
-                placeholder="ADM001"
-                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                onChange={(e) => setAdminId(e.target.value)}
-              />
-            </div>
+      {/* ---------------- LEFT SIDEBAR ---------------- */}
+      <aside className="w-72 bg-linear-to-b from-blue-600 to-blue-700 text-white flex flex-col">
 
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                placeholder="Enter admin name"
-                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
+        <div className="px-6 py-5 text-xl font-semibold border-b border-blue-500">
+          EduManager
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                placeholder="admin@email.com"
-                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="Create password"
-                className="w-full h-10 px-3 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-          </div>
+        <div className="flex-1 overflow-y-auto py-3 space-y-2">
 
           <button
-          className="mt-6 w-full h-10 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          onClick={handleRegister}
-          disabled={loading}
+            onClick={() => navigate("/admin/profile")}
+            className="w-full text-left px-6 py-3 hover:bg-blue-500/70 rounded-r-full transition"
           >
-            {loading? "Registering..." : "Register"}
+            Profile
           </button>
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+          {/* Student */}
+          <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
+            <button
+              onClick={() => toggle("student")}
+              className="w-full px-5 py-3 flex justify-between items-center hover:bg-blue-500 transition"
+            >
+              <span>Student</span>
+              <span
+                className={`transition-transform ${
+                  open.student ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
+
+            <div
+              className={`bg-blue-50 text-black transition-all duration-300 ${
+                open.student ? "max-h-40" : "max-h-0"
+              } overflow-hidden`}
+            >
+              <Student_ActionButtons/>
+            </div>
+          </div>
+
+          {/* Teacher */}
+          <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
+            <button
+              onClick={() => toggle("teacher")}
+              className="w-full px-5 py-3 flex justify-between items-center hover:bg-blue-500 transition"
+            >
+              <span>Teacher</span>
+              <span
+                className={`transition-transform ${
+                  open.teacher ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
+
+            <div
+              className={`bg-blue-50 text-black transition-all duration-300 ${
+                open.teacher ? "max-h-40" : "max-h-0"
+              } overflow-hidden`}
+            >
+              <Teacher_ActionButtons/>
+            </div>
+          </div>
+
+          {/* Class */}
+          <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
+            <button
+              onClick={() => toggle("class")}
+              className="w-full px-5 py-3 flex justify-between items-center hover:bg-blue-500 transition"
+            >
+              <span>Class</span>
+              <span
+                className={`transition-transform ${
+                  open.class ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
+
+            <div
+              className={`bg-blue-50 text-black transition-all duration-300 ${
+                open.class ? "max-h-40" : "max-h-0"
+              } overflow-hidden`}
+            >
+              <Class_ActionButtons/>
+            </div>
+          </div>
+
+          {/* Course */}
+          <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
+            <button
+              onClick={() => toggle("course")}
+              className="w-full px-5 py-3 flex justify-between items-center hover:bg-blue-500 transition"
+            >
+              <span>Courses</span>
+              <span
+                className={`transition-transform ${
+                  open.course ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
+
+            <div
+              className={`bg-blue-50 text-black transition-all duration-300 ${
+                open.course ? "max-h-40" : "max-h-0"
+              } overflow-hidden`}
+            >
+              <Active_buttons
+                addPath="/admin/course/add"
+                removePath="/admin/course/remove"
+                detailsPath="/admin/course/details"
+              />
+            </div>
+          </div>
+
+          {/* Notice */}
+          <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
+            <button
+              onClick={() => toggle("notice")}
+              className="w-full px-5 py-3 flex justify-between items-center hover:bg-blue-500 transition"
+            >
+              <span>Notices</span>
+              <span
+                className={`transition-transform ${
+                  open.notice ? "rotate-180" : ""
+                }`}
+              >
+                ▼
+              </span>
+            </button>
+
+            <div
+              className={`bg-blue-50 text-black transition-all duration-300 ${
+                open.notice ? "max-h-40" : "max-h-0"
+              } overflow-hidden`}
+            >
+              <Active_buttons
+                addPath="/admin/notice/add"
+                removePath="/admin/notice/remove"
+                detailsPath="/admin/notice/details"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* RIGHT: Management Sections */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
-            <h3 className="text-lg text-center font-semibold mb-2">Students</h3>
-            <p className="text-sm text-gray-500">Manage student records and profiles</p>
-            <Student_ActionButtons />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
-            <h3 className="text-lg text-center font-semibold mb-2">Teachers</h3>
-            <p className="text-sm text-gray-500">Add or manage teachers</p>
-            <Teacher_ActionButtons />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
-            <h3 className="text-lg text-center font-semibold mb-2">Courses</h3>
-            <p className="text-sm text-gray-500">Create and organize courses</p>
-            <Course_ActionButtons />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
-            <h3 className="text-lg text-center font-semibold mb-2">Classes</h3>
-            <p className="text-sm text-gray-500">Assign students and teachers</p>
-            <Class_ActionButtons />
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md p-6 sm:col-span-2 hover:shadow-xl transition">
-            <h3 className="text-lg text-center font-semibold mb-2">Notices</h3>
-            <p className="text-sm text-gray-500">
-              Publish announcements for students and teachers
-            </p>
-            <Notice_ActionButtons />
-          </div>
-
+        <div className="p-4 border-t border-blue-500">
+          <button
+            onClick={() => navigate("/logout")}
+            className="w-full bg-white text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition"
+          >
+            Logout
+          </button>
         </div>
-      </div>
+      </aside>
 
-      {/* Logout Button */}
-      <div className="mt-10 flex justify-center">
-        <button className="px-10 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
-          Logout
-        </button>
-      </div>
+      {/* ---------------- RIGHT SIDE ---------------- */}
+      <main className="flex-1 p-6">
 
+        {/* ===== Top bar (logo instead of search) ===== */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">
+              EM
+            </div>
+            <span className="text-lg font-semibold text-slate-700">
+              EduManager
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <p className="text-sm font-medium">Profile</p>
+              <p className="text-xs text-slate-500">Saikat</p>
+            </div>
+            <div className="h-9 w-9 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              A
+            </div>
+          </div>
+        </div>
+
+        {/* ===== Welcome panel (same style as your image) ===== */}
+        <div className="mb-10 rounded-2xl bg-linear-to-r from-blue-600 to-blue-500 p-6 text-white relative overflow-hidden">
+          <p className="text-sm opacity-90">September 2025</p>
+          <h2 className="text-2xl font-semibold mt-1">
+            Welcome back, Saikat!
+          </h2>
+          <p className="text-sm mt-1 opacity-90">
+            Manage students, teachers, classes, courses and notices from here.
+          </p>
+
+          <div className="absolute right-6 top-6 h-20 w-20 rounded-xl bg-white/10" />
+        </div>
+
+        {/* ===== Main content shifted downward ===== */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+
+          {/* Register new admin */}
+          <div className="bg-white rounded-2xl shadow p-6">
+            <h2 className="text-xl font-bold mb-5 text-center">
+              Register New Admin
+            </h2>
+
+            <form className="space-y-4">
+
+              <div>
+                <label className="text-sm text-gray-600">Admin ID</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
+                  placeholder="Enter ID"
+                  // value={adminId}
+                  onChange={(e) => setAdminId(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600">Name</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
+                  placeholder="Enter name"
+                  // value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600">Email</label>
+                <input
+                  type="email"
+                  className="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
+                  placeholder="Enter email"
+                  // value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-gray-600">Password</label>
+                <input
+                  type="password"
+                  className="w-full border rounded-lg px-3 py-2 mt-1 focus:ring-2 focus:ring-blue-400 outline-none"
+                  placeholder="Enter password"
+                  // value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <button
+                type="button"
+                className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition"
+                onClick={handleRegister}
+                disabled={loading}
+              >
+                {loading ? "Registering..." : "Register" }
+              </button>
+              {/* {error && <p className="text-red-500 text-sm mt-2">{error}</p>} */}
+            </form>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          </div>
+
+          {/* Totals section */}
+          <div className="grid grid-cols-2 grid-rows-3 gap-6">
+
+            {/* Student */}
+            <div className="bg-white rounded-2xl shadow p-5">
+              <p className="text-sm text-gray-500">Total Students</p>
+              <h3 className="text-3xl font-bold mt-2">0</h3>
+            </div>
+
+            {/* Teacher */}
+            <div className="bg-white rounded-2xl shadow p-5">
+              <p className="text-sm text-gray-500">Total Teachers</p>
+              <h3 className="text-3xl font-bold mt-2">0</h3>
+            </div>
+
+            {/* Class */}
+            <div className="bg-white rounded-2xl shadow p-5">
+              <p className="text-sm text-gray-500">Total Classes</p>
+              <h3 className="text-3xl font-bold mt-2">0</h3>
+            </div>
+
+            {/* Course */}
+            <div className="bg-white rounded-2xl shadow p-5">
+              <p className="text-sm text-gray-500">Total Courses</p>
+              <h3 className="text-3xl font-bold mt-2">0</h3>
+            </div>
+
+            {/* Notice – bigger & right corner */}
+            <div className="bg-white rounded-2xl shadow p-6 col-span-2 row-span-2 flex flex-col justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Notices</p>
+                <h3 className="text-4xl font-bold mt-2">0</h3>
+              </div>
+
+              <div className="text-sm text-gray-500 mt-6">
+                Latest notices and announcements will be shown here.
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
