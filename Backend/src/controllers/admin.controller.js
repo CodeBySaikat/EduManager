@@ -270,7 +270,7 @@ const addStudent = asyncHandler(async (req, res) => {
 const removeStudent = asyncHandler(async (req, res) => {
   const { SID } = req.params;
 
-  const student = await Student.findOneAndDelete(SID);
+  const student = await Student.findOneAndDelete({SID});
   if (!student) {
     throw new ApiError(404, "Student not found");
   }
@@ -357,7 +357,7 @@ const addTeacher = asyncHandler(async (req, res) => {
 const removeTeacher = asyncHandler(async (req, res) => {
   const { teacherId } = req.params;
 
-  const teacher = await Teacher.findOneAndDelete(teacherId);
+  const teacher = await Teacher.findOneAndDelete({ teacherId });
   if (!teacher) {
     throw new ApiError(404, "Teacher not found");
   }
@@ -402,7 +402,7 @@ const addClass = asyncHandler(async (req, res) => {
 const removeClass = asyncHandler(async (req, res) => {
   const { classId } = req.params;
 
-  const classItem = await Class.findOneAndDelete(classId);
+  const classItem = await Class.findOneAndDelete({classId});
   if (!classItem) {
     throw new ApiError(404, "Class not found");
   }
@@ -530,7 +530,6 @@ const getClassDetails = asyncHandler(async (req, res) => {
     )
   );
 });
-
 
 
 export {
