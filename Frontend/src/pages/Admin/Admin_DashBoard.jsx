@@ -3,43 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
+//importing action button components for each section
 
-import Student_ActionButtons from "../Helper/student_helper.jsx";
-import Teacher_ActionButtons from "../Helper/teacher_helper.jsx";
-import Class_ActionButtons from "../Helper/class_helper.jsx";
-
-
-
-// ReuseAble component for the buttons under each section
-const Active_buttons = ({ addPath, removePath, detailsPath }) => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="px-4 pb-3 pt-2 flex gap-2">
-      <button
-        className="flex-1 bg-green-200 text-green-800 py-1.5 rounded-md hover:bg-green-300 transition text-sm"
-        onClick={() => navigate(addPath)}
-      >
-        Add
-      </button>
-
-      <button
-        className="flex-1 bg-red-200 text-red-800 py-1.5 rounded-md hover:bg-red-300 transition text-sm"
-        onClick={() => navigate(removePath)}
-      >
-        Remove
-      </button>
-
-      <button
-        className="flex-1 bg-gray-200 text-gray-700 py-1.5 rounded-md hover:bg-gray-300 transition text-sm"
-        onClick={() => navigate(detailsPath)}
-      >
-        Details
-      </button>
-    </div>
-  );
-};
-
+import Student_ActionButtons from "./Helper/student_helper.jsx";
+import Teacher_ActionButtons from "./Helper/teacher_helper.jsx";
+import Class_ActionButtons from "./Helper/class_helper.jsx";
+import Course_ActionButtons from "./Helper/course_helper.jsx";
+import Notice_buttons from "./Helper/notice_helper.jsx";
 
 
 
@@ -110,6 +80,9 @@ const Admin_Dashboard = () => {
       setLoading(false);
     }
   };
+
+
+
 
 
 
@@ -249,11 +222,7 @@ const Admin_Dashboard = () => {
                 open.course ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Active_buttons
-                addPath="/admin/course/add"
-                removePath="/admin/course/remove"
-                detailsPath="/admin/course/details"
-              />
+              <Course_ActionButtons/>
             </div>
           </div>
 
@@ -278,11 +247,7 @@ const Admin_Dashboard = () => {
                 open.notice ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Active_buttons
-                addPath="/admin/notice/add"
-                removePath="/admin/notice/remove"
-                detailsPath="/admin/notice/details"
-              />
+              <Notice_buttons/>
             </div>
           </div>
         </div>

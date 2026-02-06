@@ -315,7 +315,7 @@ const addCourse = asyncHandler(async (req, res) => {
 const removeCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
 
-  const course = await Course.findOneAndDelete(courseId);
+  const course = await Course.findOneAndDelete({courseId});
   if (!course) {
     throw new ApiError(404, "Course not found");
   }
@@ -433,7 +433,7 @@ const addNotice = asyncHandler(async (req, res) => {
 
 const removeNotice = asyncHandler(async (req, res) => {
   const { noticeId } = req.params;
-  const notice = await Notice.findOneAndDelete(noticeId);
+  const notice = await Notice.findOneAndDelete({noticeId});
   if (!notice) {
     throw new ApiError(404, "Notice not found");
   }

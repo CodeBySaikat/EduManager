@@ -2,18 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Class_ActionButtons = () => {
+const Course_ActionButtons = () => {
 
   const navigate = useNavigate();
 
   const [showRemove, setShowRemove] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const [classId, setClassId] = useState("");
+  const [courseId, setCourseId] = useState("");
 
-  const [classData, setClassData] = useState(null);
-  const [classStudents, setClassStudents] = useState([]);
-  const [classTeachers, setClassTeachers] = useState([]);
+  const [courseData, setCourseData] = useState(null);
+  const [courseStudents, setCourseStudents] = useState([]);
+  const [courseTeachers, setCourseTeachers] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -21,9 +21,12 @@ const Class_ActionButtons = () => {
   const [showToast, setShowToast] = useState(false);
 
 
-  // ---------------- REMOVE CLASS ----------------
-  const handleRemoveClass = async () => {
-    if (!classId) return;
+  // ---------------- REMOVE COURSE ----------------
+  const handleRemoveCourse = async () => {
+    if (!courseId) {
+      alert("Course ID is required");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -32,7 +35,7 @@ const Class_ActionButtons = () => {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:8000/admin/removeClass/${classId}`,
+        `http://localhost:8000/admin/removeCourse/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -47,11 +50,11 @@ const Class_ActionButtons = () => {
         setShowToast(false);
       }, 1000);
 
-      setClassId("");
+      setCourseId("");
 
     } catch (error) {
       setMessage(
-        error?.response?.data?.message || "Failed to delete class"
+        error?.response?.data?.message || "Failed to delete course"
       );
     } finally {
       setLoading(false);
@@ -59,21 +62,22 @@ const Class_ActionButtons = () => {
   };
 
 
-  // ---------------- GET CLASS DETAILS ----------------
-  const handleGetClassDetails = async () => {
-    if (!classId) return;
+  // ---------------- GET COURSE DETAILS ----------------
+  const handleGetCourseDetails = async () => {
+    if (!courseId) return;
 
     try {
       setLoading(true);
       setMessage("");
-      setClassData(null);
-      setClassStudents([]);
-      setClassTeachers([]);
+
+      setCourseData(null);
+      setCourseStudents([]);
+      setCourseTeachers([]);
 
       const token = localStorage.getItem("token");
 
       const res = await axios.get(
-        `http://localhost:8000/admin/fetch/classDetails/${classId}`,
+        `http://localhost:8000/admin/fetch/courseDetails/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -81,13 +85,16 @@ const Class_ActionButtons = () => {
         }
       );
 
-      setClassData(res.data.data.classItem);
-      setClassStudents(res.data.data.students || []);
-      setClassTeachers(res.data.data.teachers || []);
+      const CourseItem = res.data.data.course;
+
+      setCourseData(CourseItem);
+
+      setCourseStudents(CourseItem.studentsEnrolled || []);
+      setCourseTeachers(CourseItem.teachersAssigned || []);
 
     } catch (error) {
       setMessage(
-        error?.response?.data?.message || "Class not found"
+        error?.response?.data?.message || "Course not found"
       );
     } finally {
       setLoading(false);
@@ -102,7 +109,7 @@ const Class_ActionButtons = () => {
 
         <button
           className="flex-1 bg-green-200 text-green-800 py-1.5 rounded-md hover:bg-green-300 transition text-sm"
-          onClick={() => navigate("/admin/addClass")}
+          onClick={() => navigate("/admin/addCourse")}
         >
           Add
         </button>
@@ -110,7 +117,7 @@ const Class_ActionButtons = () => {
         <button
           className="flex-1 bg-red-200 text-red-800 py-1.5 rounded-md hover:bg-red-300 transition text-sm"
           onClick={() => {
-            setClassId("");
+            setCourseId("");
             setMessage("");
             setShowRemove(true);
           }}
@@ -121,10 +128,10 @@ const Class_ActionButtons = () => {
         <button
           className="flex-1 bg-gray-200 text-gray-700 py-1.5 rounded-md hover:bg-gray-300 transition text-sm"
           onClick={() => {
-            setClassId("");
-            setClassData(null);
-            setClassStudents([]);
-            setClassTeachers([]);
+            setCourseId("");
+            setCourseData(null);
+            setCourseStudents([]);
+            setCourseTeachers([]);
             setMessage("");
             setShowDetails(true);
           }}
@@ -141,15 +148,15 @@ const Class_ActionButtons = () => {
           <div className="bg-white p-6 rounded-lg w-87.5">
 
             <h2 className="text-lg font-semibold mb-4 text-center">
-              Remove Class
+              Remove Course
             </h2>
 
             <input
               type="text"
-              placeholder="Enter Class ID"
+              placeholder="Enter Course ID"
               className="w-full border p-2 rounded mb-4"
-              value={classId}
-              onChange={(e) => setClassId(e.target.value)}
+              value={courseId}
+              onChange={(e) => setCourseId(e.target.value)}
             />
 
             {message && (
@@ -160,7 +167,7 @@ const Class_ActionButtons = () => {
 
             <div className="flex gap-3">
               <button
-                onClick={handleRemoveClass}
+                onClick={handleRemoveCourse}
                 disabled={loading}
                 className="flex-1 bg-red-500 text-white py-2 rounded"
               >
@@ -184,30 +191,30 @@ const Class_ActionButtons = () => {
       {showToast && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-xs">
           <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg">
-            Class deleted successfully
+            Course deleted successfully
           </div>
         </div>
       )}
 
 
-      {/* ---------------- CLASS DETAILS MODAL ---------------- */}
+      {/* ---------------- Course DETAILS MODAL ---------------- */}
       {showDetails && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-xs text-teal-800">
 
           <div className="bg-white p-6 rounded-lg w-125 max-h-[90vh] overflow-y-auto">
 
             <h2 className="text-lg font-semibold mb-4 text-center">
-              Class Details
+              Course Details
             </h2>
 
-            {!classData && (
+            {!courseData && (
               <>
                 <input
                   type="text"
-                  placeholder="Enter Class ID"
+                  placeholder="Enter Course ID"
                   className="w-full border p-2 rounded mb-4"
-                  value={classId}
-                  onChange={(e) => setClassId(e.target.value)}
+                  value={courseId}
+                  onChange={(e) => setCourseId(e.target.value)}
                 />
 
                 {message && (
@@ -218,7 +225,7 @@ const Class_ActionButtons = () => {
 
                 <div className="flex gap-3">
                   <button
-                    onClick={handleGetClassDetails}
+                    onClick={handleGetCourseDetails}
                     disabled={loading}
                     className="flex-1 bg-blue-600 text-white py-2 rounded"
                   >
@@ -236,29 +243,44 @@ const Class_ActionButtons = () => {
             )}
 
 
-            {classData && (
+            {courseData && (
               <div className="text-sm space-y-3">
 
-                <p><b>Class ID:</b> {classData.classId}</p>
-                <p><b>Class Name:</b> {classData.className}</p>
-                <p><b>Representative:</b> {classData.representative}</p>
+                <p><b>Course ID:</b> {courseData.courseId}</p>
+                <p><b>Course Name:</b> {courseData.courseName}</p>
+                <p><b>Course HOD:</b> {courseData.HOD || "-"}</p>
 
                 <div>
-                  <b>Students</b>
-                  {classStudents.length === 0 && <p>No students</p>}
-                  {classStudents.map((s) => (
+                  <b>Students Enrolled</b>
+                  {courseStudents.length === 0 && <p>No students</p>}
+
+                  {/* {courseStudents.map((s) => (
                     <p key={s.SID}>
                       {s.SID} - {s.name}
+                    </p>
+                  ))} */}
+
+                  {courseStudents.map((s, i) => (
+                    <p key={i}>
+                      {s}
                     </p>
                   ))}
                 </div>
 
+
                 <div>
-                  <b>Teachers</b>
-                  {classTeachers.length === 0 && <p>No teachers</p>}
-                  {classTeachers.map((t) => (
+                  <b>Teachers Assigned</b>
+                  {courseTeachers.length === 0 && <p>No teachers</p>}
+                  
+                  {/* {courseTeachers.map((t) => (
                     <p key={t.teacherId}>
                       {t.teacherId} - {t.teacherName}
+                    </p>
+                  ))} */}
+
+                  {courseTeachers.map((t, i) => (
+                    <p key={i}>
+                      {t}
                     </p>
                   ))}
                 </div>
@@ -283,4 +305,4 @@ const Class_ActionButtons = () => {
   );
 };
 
-export default Class_ActionButtons;
+export default Course_ActionButtons;
