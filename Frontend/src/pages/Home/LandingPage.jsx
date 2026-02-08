@@ -56,11 +56,12 @@ const LandingPage = () => {
         setError("accessToken not received", accessToken);
       };
 
-      console.log(accessToken);
 
       //save token based on role
       localStorage.setItem("token", accessToken);
       localStorage.setItem("activeRole", role);
+
+      console.log(`${role}accessToken`, accessToken);
 
       //clear navigation
       if(role === "admin") navigate("/admin/dashboard");
