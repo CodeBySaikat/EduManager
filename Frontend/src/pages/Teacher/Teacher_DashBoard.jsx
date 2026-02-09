@@ -17,6 +17,7 @@ import { useState } from "react";
 //Teacher function imported
 import Assign_Grade from "./assign_grade.jsx";
 import Mark_Attendance from "./mark_attendance.jsx";
+import Check_Notices from "./show_notices.jsx";
 
 
 
@@ -26,6 +27,7 @@ const Teacher_Dashboard = () => {
 
   const [showAssignGrade, setShowAssignGrade] = useState(false);
   const [showMarkAttendance, setShowMarkAttendance] = useState(false);
+  const [openCheckNotices, setOpenCheckNotices] = useState(false);
 
 
 
@@ -116,7 +118,7 @@ const Teacher_Dashboard = () => {
           <div>
             <p className="text-sm opacity-90 mb-1">September 2025</p>
             <h2 className="text-2xl font-semibold mb-1">
-              Welcome back, Teacher!
+              Welcome Saikat
             </h2>
             <p className="text-sm opacity-90">
               Manage students, courses and notices from here.
@@ -181,7 +183,9 @@ const Teacher_Dashboard = () => {
               subtitle="View all published notices"
               icon={<FaBullhorn size={26} />}
               avatar="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
-              onClick={() => navigate("/teacher/notices")}
+              // onClick={() => setOpenCheckNotices(true)}
+              onClick={() => setOpenCheckNotices(true)}
+              
             />
 
           </div>
@@ -200,6 +204,12 @@ const Teacher_Dashboard = () => {
       <Mark_Attendance
         open={showMarkAttendance}
         onClose={() => setShowMarkAttendance(false)}
+      />
+
+      {/* mount show notices */}
+      <Check_Notices
+        open={openCheckNotices}
+        onClose={() => setOpenCheckNotices(false)}
       />
 
     </div>
