@@ -199,7 +199,7 @@ const Teacher_Dashboard = () => {
       {/* mount assign attendance */}
       <Mark_Attendance
         open={showMarkAttendance}
-        onClose={() => setShowAssignGrade(false)}
+        onClose={() => setShowMarkAttendance(false)}
       />
 
     </div>
