@@ -3,8 +3,8 @@ import "./index.css";
 import "./App.css";
 
 import LandingPage from './pages/Home/LandingPage.jsx';
-import Admin_Dashboard from "./pages/Admin/Admin_DashBoard.jsx";
 
+import Admin_Dashboard from "./pages/Admin/Admin_DashBoard.jsx";
 import Teacher_DashBoard from "./pages/Teacher/Teacher_DashBoard.jsx";
 import Student_DashBoard from "./pages/Student/Student_DashBoard.jsx";
 

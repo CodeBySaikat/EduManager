@@ -1,11 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Dashboard = () => {
+
+
+import Check_Student_Attendance from "./check_attendance.jsx";
+import Check_Student_Grades from "./check_grades.jsx";
+
+
+
+
+const Student_Dashboard = () => {
+
+  const [openAttendance, setOpenAttendance] = useState(false);
+  const [attendancePercentage, setAttendancePercentage] = useState(
+    Number(localStorage.getItem("attendancePercentage")) || 0
+  );
+
+  const [openGrades, setOpenGrades] = useState(false);
+  const [overallGrade, setOverallGrade] = useState(
+    localStorage.getItem("overallGrade") || "0"
+  )
+
+
+  // const student = JSON.parse(localStorage.getItem("user"));
+  // const SID = student?.SID;
+  // console.log("SID", SID);
+
+  const SID = JSON.parse(localStorage.getItem("user"))?.SID;
+  console.log("SID: ", SID);
+
+
+
+  const handleMenuClick = (name) => {
+    console.log("Clicked:", name);
+    // later you can navigate or open a section here
+  };
+
   return (
     <div className="min-h-screen bg-blue-50 flex">
 
       {/* SIDEBAR */}
-      <aside className="w-64 bg-linear-to-b from-blue-700 to-blue-600 text-white p-6 flex flex-col justify-between">
+      <aside className="w-64 bg-linear-to-b from-blue-700 to-blue-600 text-white p-6 flex flex-col justify-between m-2 rounded-xl">
         <div>
           {/* Logo */}
           <div className="flex items-center gap-3 mb-10">
@@ -19,26 +53,39 @@ const Dashboard = () => {
           <nav className="space-y-4 text-sm">
             {[
               "Profile",
-              "Attendence",
+              "Change Password",
+              "Attendance",
               "Grades",
               "Enrolled Courses",
               "Classes",
-              "Schedule",
-              "Results",
-              "Pending Fees",
-              "Notices",
             ].map((item, index) => (
-              <div
+              <button
                 key={index}
-                className="px-4 py-2 rounded-lg hover:bg-white/20 cursor-pointer transition"
+                onClick={() => {
+                  if (item === "Attendance") {
+                    setOpenAttendance(true);
+                  } 
+                  else if(item === "Grades") {
+                    setOpenGrades(true);
+                  }
+                  else {
+                    handleMenuClick(item);
+                  }
+                }}
+                className="w-full text-left px-4 py-2 rounded-lg hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-white/40"
+                type="button"
               >
                 {item}
-              </div>
+              </button>
             ))}
           </nav>
         </div>
 
-        <button className="mt-10 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition">
+        <button
+          type="button"
+          className="mt-10 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
+          onClick={() => handleMenuClick("Logout")}
+        >
           Logout
         </button>
       </aside>
@@ -48,11 +95,13 @@ const Dashboard = () => {
 
         {/* TOP BAR */}
         <div className="flex items-center justify-between mb-6">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-1/3 px-4 py-2 rounded-full border focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          
+          <div className="flex items-center gap-3 text-black font-semibold text-xl">
+            <div className="w-10 h-10 bg-indigo-700 text-white rounded-xl flex items-center justify-center">
+              EM
+            </div>
+            EduManager
+          </div>
 
           <div className="flex items-center gap-4">
             <div className="text-right">
@@ -66,7 +115,7 @@ const Dashboard = () => {
         </div>
 
         {/* WELCOME CARD */}
-        <div className="bg-linear-to-r from-blue-600 to-blue-500 text-white rounded-2xl p-6 mb-6 flex justify-between items-center">
+        <div className="bg-linear-to-r from-sky-700 to-sky-500 text-white rounded-2xl p-6 mb-6 flex justify-between items-center">
           <div>
             <p className="text-sm opacity-80">September 2025</p>
             <h2 className="text-2xl font-bold mt-2">
@@ -82,8 +131,8 @@ const Dashboard = () => {
         {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {[
-            { title: "Total Attendance", value: "75%" },
-            { title: "Grades", value: "A+" },
+            { title: "Total Attendance", value: `${attendancePercentage}%` },
+            { title: "Overall Grades", value: `${overallGrade}` || "0" },
             { title: "Pending Fees", value: "4800" },
           ].map((item, index) => (
             <div
@@ -101,11 +150,17 @@ const Dashboard = () => {
 
           {/* COURSES */}
           <div className="lg:col-span-2 bg-white rounded-2xl shadow p-6">
-            <div className="flex justify-between mb-4">
+            <div className="flex justify-between mb-4 items-center">
               <h3 className="font-semibold text-lg">Courses</h3>
-              <span className="text-blue-600 cursor-pointer text-sm">
+
+              {/* CHANGED → button */}
+              <button
+                type="button"
+                onClick={() => handleMenuClick("All Courses")}
+                className="text-blue-600 text-sm hover:underline"
+              >
                 See all
-              </span>
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -113,48 +168,78 @@ const Dashboard = () => {
                 "Object Oriented Programming",
                 "Database Management Systems",
               ].map((course, index) => (
-                <div
+                <button
                   key={index}
-                  className="border rounded-xl p-4 hover:shadow-md transition"
+                  type="button"
+                  onClick={() => handleMenuClick(course)}
+                  className="text-left border rounded-xl p-4 hover:shadow-md transition"
                 >
                   <h4 className="font-semibold">{course}</h4>
-                  <button className="mt-3 px-4 py-1 bg-blue-600 text-white rounded-lg text-sm">
-                    View
-                  </button>
-                </div>
+                </button>
               ))}
             </div>
           </div>
 
           {/* NOTICE */}
           <div className="bg-white rounded-2xl shadow p-6">
-            <div className="flex justify-between mb-4">
+            <div className="flex justify-between mb-4 items-center">
               <h3 className="font-semibold text-lg">Daily Notices</h3>
-              <span className="text-blue-600 cursor-pointer text-sm">
+
+              {/* CHANGED → button */}
+              <button
+                type="button"
+                onClick={() => handleMenuClick("All Notices")}
+                className="text-blue-600 text-sm hover:underline"
+              >
                 See all
-              </span>
+              </button>
             </div>
 
             <div className="space-y-4 text-sm">
-              <div>
+              <button
+                type="button"
+                onClick={() => handleMenuClick("Exam Schedule Updated")}
+                className="text-left w-full"
+              >
                 <p className="font-semibold">Exam Schedule Updated</p>
                 <p className="text-gray-500">
                   New mid-term exam dates have been published.
                 </p>
-              </div>
-              <div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleMenuClick("Fee Payment Reminder")}
+                className="text-left w-full"
+              >
                 <p className="font-semibold">Fee Payment Reminder</p>
                 <p className="text-gray-500">
                   Pending fees must be cleared before semester end.
                 </p>
-              </div>
+              </button>
             </div>
           </div>
 
         </div>
       </main>
+
+      {/* ✅ Attendance Modal */}
+      <Check_Student_Attendance
+        open={openAttendance}
+        onClose={() => setOpenAttendance(false)}
+        SID={SID}
+        onPercentage={setAttendancePercentage}
+      />
+
+      {/* ✅ Grades Modal */}
+      <Check_Student_Grades
+      open={openGrades}
+      onClose={() => setOpenGrades(false)}
+      SID={SID}
+      onOverallGrade={setOverallGrade}
+      />
     </div>
   );
 };
 
-export default Dashboard;
+export default Student_Dashboard;

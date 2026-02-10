@@ -17,6 +17,8 @@ const LandingPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+
+
   //for login function
   const handleLogin = async(role) => {
     try {
@@ -27,10 +29,10 @@ const LandingPage = () => {
 
       //diff role payload
       if(role === "admin") {
-        payload = {adminId: adminId, password: adminPassword};
+        payload = {adminId, password: adminPassword};
       } 
       else if (role === "teacher") {
-        payload = {teacherId: teacherId, password: teacherPassword};
+        payload = {teacherId, password: teacherPassword};
       }
       else if (role === "student") {
         payload = {SID: studentId, password: studentPassword};
@@ -52,8 +54,25 @@ const LandingPage = () => {
 
       const accessToken = response.data?.data?.accessToken;
 
-      if(!accessToken) {
-        setError("accessToken not received", accessToken);
+
+      //for store logged user info
+      let user = null;
+
+      if(role === "student") {
+        user = response.data?.data?.student;
+      }
+
+      if(role === "teacher") {
+        user = response.data?.data?.teacher;
+      }
+
+      if(role === "admin") {
+        user = response.data?.data?.admin;
+      }
+
+      if(!accessToken || !user) {
+        setError("Login Data Missing From Server");
+        return;
       };
 
 
@@ -61,6 +80,11 @@ const LandingPage = () => {
       localStorage.setItem("token", accessToken);
       localStorage.setItem("activeRole", role);
 
+
+      //store full information for logged in user
+      localStorage.setItem("user", JSON.stringify(user));
+
+      
       console.log(`${role}accessToken`, accessToken);
 
       //clear navigation
