@@ -1,25 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 
 
 import Check_Student_Attendance from "./check_attendance.jsx";
 import Check_Student_Grades from "./check_grades.jsx";
+import Check_PendingFees from "./check_fees.jsx";
 
 
 
 
 const Student_Dashboard = () => {
-
-  const [openAttendance, setOpenAttendance] = useState(false);
-  const [attendancePercentage, setAttendancePercentage] = useState(
-    Number(localStorage.getItem("attendancePercentage")) || 0
-  );
-
-  const [openGrades, setOpenGrades] = useState(false);
-  const [overallGrade, setOverallGrade] = useState(
-    localStorage.getItem("overallGrade") || "0"
-  )
-
 
   // const student = JSON.parse(localStorage.getItem("user"));
   // const SID = student?.SID;
@@ -27,6 +18,192 @@ const Student_Dashboard = () => {
 
   const SID = JSON.parse(localStorage.getItem("user"))?.SID;
   console.log("SID: ", SID);
+
+
+  // =====================================================
+  // fetch pending fees immediately on dashboard load
+  // =====================================================
+
+  const [openPendingFees, setOpenPendingFees] = useState(false);
+  const [studentPendingFees, setStudentPendingFees] = useState(
+    Number(localStorage.getItem("pendingAmount")) || 0
+  )
+
+
+  useEffect(() => {
+
+    if(!SID) return;
+
+    const Section_fetch_PendingFees = async () => {
+      try {
+        
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          `http://localhost:8000/student/checkFees/${SID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const amount = res.data.data.pendingFees;
+
+        setStudentPendingFees(amount);
+        localStorage.setItem("pendingAmount", amount);
+
+      } catch (error) {
+        console.log("Failed to load pending fees", error);
+      }
+    };
+
+    Section_fetch_PendingFees();
+
+  }, [SID]);
+
+
+
+  
+  // =======================================================================
+  // fetch  overall attendance percentage immediately on dashboard load
+  // =======================================================================
+
+
+  const [openAttendance, setOpenAttendance] = useState(false);
+  const [attendancePercentage, setAttendancePercentage] = useState(
+    Number(localStorage.getItem("attendancePercentage")) || 0
+  );
+
+
+  useEffect(() => {
+
+    if (!SID) return;
+
+    const Section_fetch_overallAttendance = async () => {
+
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          `http://localhost:8000/student/checkAttendance/${SID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = res.data.data || [];
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const tillToday = data.filter((r) => {
+          const d = new Date(r.date);
+          d.setHours(0, 0, 0, 0);
+
+          const day = d.getDay(); // ✅ correct
+
+          const isWeekend = day === 0 || day === 6;
+
+          if (isWeekend) return false;
+
+          return d <= today;
+        });
+
+        const total = tillToday.length;
+        const present = tillToday.filter(r => r.present === true).length;
+
+        const percentage =
+        total === 0 ? 0 : Math.round((present / total) * 100);
+
+        setAttendancePercentage(percentage);
+
+        localStorage.setItem("attendancePercentage", percentage);
+
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    Section_fetch_overallAttendance();
+
+  }, [SID]);
+
+
+
+
+  // =====================================================
+  // fetch overall Grades immediately on dashboard load
+  // =====================================================
+
+
+  const [openGrades, setOpenGrades] = useState(false);
+  const [overallGrade, setOverallGrade] = useState(
+    localStorage.getItem("overallGrade") || "0"
+  );
+
+
+  useEffect(() => {
+
+    if (!SID) return;
+
+    const Section_fetch_Grades = async () => {
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          `http://localhost:8000/student/checkGrades/${SID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = res.data.data || [];
+
+        const gradePointToLetter = (gp) => {
+          if (gp === 10) return "A+";
+          if (gp === 9) return "A";
+          if (gp === 8) return "B+";
+          if (gp === 7) return "B";
+          if (gp === 6) return "C+";
+          if (gp === 5) return "C";
+          if (gp === 4) return "D";
+          return "F";
+        };
+
+        let overallLetter = "-";
+
+        if (data.length > 0) {
+
+          const totalPoints = data.reduce(
+            (sum, g) => sum + Number(g.grade || 0),
+            0
+          );
+
+          const avgPoint = Math.round(totalPoints / data.length);
+
+          overallLetter = gradePointToLetter(avgPoint);
+        }
+
+        setOverallGrade(overallLetter);
+
+        localStorage.setItem("overallGrade", overallLetter);
+
+      } catch (err) {
+        console.error("Failed to overall grade", err);
+      } 
+    };
+
+    Section_fetch_Grades();
+
+  }, [SID]); 
+
+
 
 
 
@@ -58,6 +235,7 @@ const Student_Dashboard = () => {
               "Grades",
               "Enrolled Courses",
               "Classes",
+              "Pending Fees"
             ].map((item, index) => (
               <button
                 key={index}
@@ -67,6 +245,9 @@ const Student_Dashboard = () => {
                   } 
                   else if(item === "Grades") {
                     setOpenGrades(true);
+                  }
+                  else if(item === "Pending Fees") {
+                    setOpenPendingFees(true);
                   }
                   else {
                     handleMenuClick(item);
@@ -132,8 +313,8 @@ const Student_Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {[
             { title: "Total Attendance", value: `${attendancePercentage}%` },
-            { title: "Overall Grades", value: `${overallGrade}` || "0" },
-            { title: "Pending Fees", value: "4800" },
+            { title: "Overall Grades", value: overallGrade || "0" },
+            { title: "Pending Fees", value: studentPendingFees },
           ].map((item, index) => (
             <div
               key={index}
@@ -238,6 +419,15 @@ const Student_Dashboard = () => {
       SID={SID}
       onOverallGrade={setOverallGrade}
       />
+
+      <Check_PendingFees
+      open={openPendingFees}
+      onClose={() => setOpenPendingFees(false)}
+      SID={SID}
+      // studentName={studentName}
+      onPendingFees={setStudentPendingFees}
+      />
+
     </div>
   );
 };

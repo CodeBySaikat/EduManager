@@ -16,7 +16,6 @@ const Check_Student_Grades = ({ open, onClose, SID, onOverallGrade }) => { // ğŸ
     if (gp === 6) return "C+";
     if (gp === 5) return "C";
     if (gp === 4) return "D";
-    if (gp === 5) return "C";
     return "F";
   };
 

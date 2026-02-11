@@ -46,10 +46,14 @@ const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}})
           d.setHours(0, 0, 0, 0);
 
           //here changes for ignore saturday & sunday
-          const day = d.getDate(); //0 => sun, 6=>sat
+          const day = d.getDay(); //0 => sun, 6=>sat
 
           // ignore saturday & sunday -> in attendance
           const isWeekend = day === 0 || day === 6;
+
+          if(isWeekend) {
+            return false;
+          }
 
           return d <= today;
         });
@@ -73,7 +77,9 @@ const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}})
     };
 
     fetchAttendance();
+
   }, [open, SID, onPercentage]);
+  
 
   // -------------------------------
   // attendance map
