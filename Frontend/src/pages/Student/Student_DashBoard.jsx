@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-
-
 import Check_Student_Attendance from "./check_attendance.jsx";
 import Check_Student_Grades from "./check_grades.jsx";
 import Check_PendingFees from "./check_fees.jsx";
+import Check_Notices from "./check_notices.jsx";
+import Check_Student_Details from "./check_details.jsx";
+
+import StudentLogout from "./student_logout.jsx";
+
 
 
 
 
 const Student_Dashboard = () => {
 
-  // const student = JSON.parse(localStorage.getItem("user"));
-  // const SID = student?.SID;
-  // console.log("SID", SID);
-
   const SID = JSON.parse(localStorage.getItem("user"))?.SID;
   console.log("SID: ", SID);
-
 
   // =====================================================
   // fetch pending fees immediately on dashboard load
@@ -27,8 +25,7 @@ const Student_Dashboard = () => {
   const [openPendingFees, setOpenPendingFees] = useState(false);
   const [studentPendingFees, setStudentPendingFees] = useState(
     Number(localStorage.getItem("pendingAmount")) || 0
-  )
-
+  );
 
   useEffect(() => {
 
@@ -36,7 +33,7 @@ const Student_Dashboard = () => {
 
     const Section_fetch_PendingFees = async () => {
       try {
-        
+
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
@@ -64,17 +61,14 @@ const Student_Dashboard = () => {
 
 
 
-  
   // =======================================================================
   // fetch  overall attendance percentage immediately on dashboard load
   // =======================================================================
-
 
   const [openAttendance, setOpenAttendance] = useState(false);
   const [attendancePercentage, setAttendancePercentage] = useState(
     Number(localStorage.getItem("attendancePercentage")) || 0
   );
-
 
   useEffect(() => {
 
@@ -103,12 +97,10 @@ const Student_Dashboard = () => {
           const d = new Date(r.date);
           d.setHours(0, 0, 0, 0);
 
-          const day = d.getDay(); // ✅ correct
-
+          const day = d.getDay();
           const isWeekend = day === 0 || day === 6;
 
           if (isWeekend) return false;
-
           return d <= today;
         });
 
@@ -116,10 +108,9 @@ const Student_Dashboard = () => {
         const present = tillToday.filter(r => r.present === true).length;
 
         const percentage =
-        total === 0 ? 0 : Math.round((present / total) * 100);
+          total === 0 ? 0 : Math.round((present / total) * 100);
 
         setAttendancePercentage(percentage);
-
         localStorage.setItem("attendancePercentage", percentage);
 
       } catch (e) {
@@ -133,17 +124,14 @@ const Student_Dashboard = () => {
 
 
 
-
   // =====================================================
   // fetch overall Grades immediately on dashboard load
   // =====================================================
-
 
   const [openGrades, setOpenGrades] = useState(false);
   const [overallGrade, setOverallGrade] = useState(
     localStorage.getItem("overallGrade") || "0"
   );
-
 
   useEffect(() => {
 
@@ -186,31 +174,81 @@ const Student_Dashboard = () => {
           );
 
           const avgPoint = Math.round(totalPoints / data.length);
-
           overallLetter = gradePointToLetter(avgPoint);
         }
 
         setOverallGrade(overallLetter);
-
         localStorage.setItem("overallGrade", overallLetter);
 
       } catch (err) {
         console.error("Failed to overall grade", err);
-      } 
+      }
     };
 
     Section_fetch_Grades();
 
-  }, [SID]); 
+  }, [SID]);
+
+  
+
+  /* =====================================================
+     🟢 NEW – fetch notices immediately + auto refresh
+  ===================================================== */
+
+  // const [notices, setNotices] = useState([]);
+  // const [openAllNotices, setOpenAllNotices] = useState(false);
+
+
+  // useEffect(() => {
+
+  //   if (!SID) return;
+
+  //   let intervalId;
+
+  //   const fetchNotices = async () => {
+  //     try {
+
+  //       const token = localStorage.getItem("token");
+
+  //       const res = await axios.get(
+  //         `http://localhost:8000/student/viewNotice/${SID}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       setNotices(res.data?.data || []);
+
+  //     } catch (err) {
+  //       console.error("Failed to load notices", err);
+  //     }
+  //   };
+
+  //   fetchNotices();
+
+  //   // intervalId = setInterval(fetchNotices, 15000);
+
+  //   // return () => clearInterval(intervalId);
+
+  // }, [SID]);
 
 
 
+
+  const [openProfile, setOpenProfile] = useState(false);
+
+  const [showLogout, setShowLogout] = useState(false);
 
 
   const handleMenuClick = (name) => {
     console.log("Clicked:", name);
-    // later you can navigate or open a section here
   };
+
+
+
+
 
   return (
     <div className="min-h-screen bg-blue-50 flex">
@@ -218,7 +256,7 @@ const Student_Dashboard = () => {
       {/* SIDEBAR */}
       <aside className="w-64 bg-linear-to-b from-blue-700 to-blue-600 text-white p-6 flex flex-col justify-between m-2 rounded-xl">
         <div>
-          {/* Logo */}
+
           <div className="flex items-center gap-3 mb-10">
             <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center text-xl font-bold">
               🎓
@@ -226,7 +264,6 @@ const Student_Dashboard = () => {
             <h1 className="text-xl font-semibold"><i>Student</i></h1>
           </div>
 
-          {/* Menu */}
           <nav className="space-y-4 text-sm">
             {[
               "Profile",
@@ -249,6 +286,9 @@ const Student_Dashboard = () => {
                   else if(item === "Pending Fees") {
                     setOpenPendingFees(true);
                   }
+                  else if(item === "Profile") {
+                    setOpenProfile(true);
+                  }
                   else {
                     handleMenuClick(item);
                   }
@@ -265,7 +305,7 @@ const Student_Dashboard = () => {
         <button
           type="button"
           className="mt-10 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
-          onClick={() => handleMenuClick("Logout")}
+          onClick={() => setShowLogout(true)}
         >
           Logout
         </button>
@@ -276,7 +316,7 @@ const Student_Dashboard = () => {
 
         {/* TOP BAR */}
         <div className="flex items-center justify-between mb-6">
-          
+
           <div className="flex items-center gap-3 text-black font-semibold text-xl">
             <div className="w-10 h-10 bg-indigo-700 text-white rounded-xl flex items-center justify-center">
               EM
@@ -313,7 +353,7 @@ const Student_Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {[
             { title: "Total Attendance", value: `${attendancePercentage}%` },
-            { title: "Overall Grades", value: overallGrade || "0" },
+            { title: "Overall Grades", value: `${overallGrade}` || 0 },
             { title: "Pending Fees", value: studentPendingFees },
           ].map((item, index) => (
             <div
@@ -326,7 +366,6 @@ const Student_Dashboard = () => {
           ))}
         </div>
 
-        {/* MAIN GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* COURSES */}
@@ -334,7 +373,6 @@ const Student_Dashboard = () => {
             <div className="flex justify-between mb-4 items-center">
               <h3 className="font-semibold text-lg">Courses</h3>
 
-              {/* CHANGED → button */}
               <button
                 type="button"
                 onClick={() => handleMenuClick("All Courses")}
@@ -362,49 +400,12 @@ const Student_Dashboard = () => {
           </div>
 
           {/* NOTICE */}
-          <div className="bg-white rounded-2xl shadow p-6">
-            <div className="flex justify-between mb-4 items-center">
-              <h3 className="font-semibold text-lg">Daily Notices</h3>
-
-              {/* CHANGED → button */}
-              <button
-                type="button"
-                onClick={() => handleMenuClick("All Notices")}
-                className="text-blue-600 text-sm hover:underline"
-              >
-                See all
-              </button>
-            </div>
-
-            <div className="space-y-4 text-sm">
-              <button
-                type="button"
-                onClick={() => handleMenuClick("Exam Schedule Updated")}
-                className="text-left w-full"
-              >
-                <p className="font-semibold">Exam Schedule Updated</p>
-                <p className="text-gray-500">
-                  New mid-term exam dates have been published.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleMenuClick("Fee Payment Reminder")}
-                className="text-left w-full"
-              >
-                <p className="font-semibold">Fee Payment Reminder</p>
-                <p className="text-gray-500">
-                  Pending fees must be cleared before semester end.
-                </p>
-              </button>
-            </div>
-          </div>
+          <Check_Notices SID={SID}/>
 
         </div>
       </main>
 
-      {/* ✅ Attendance Modal */}
+      {/* Attendance Modal */}
       <Check_Student_Attendance
         open={openAttendance}
         onClose={() => setOpenAttendance(false)}
@@ -412,21 +413,30 @@ const Student_Dashboard = () => {
         onPercentage={setAttendancePercentage}
       />
 
-      {/* ✅ Grades Modal */}
+      {/* Grades Modal */}
       <Check_Student_Grades
-      open={openGrades}
-      onClose={() => setOpenGrades(false)}
-      SID={SID}
-      onOverallGrade={setOverallGrade}
+        open={openGrades}
+        onClose={() => setOpenGrades(false)}
+        SID={SID}
+        onOverallGrade={setOverallGrade}
       />
 
+      {/* Pending Fees Modal */}
       <Check_PendingFees
-      open={openPendingFees}
-      onClose={() => setOpenPendingFees(false)}
-      SID={SID}
-      // studentName={studentName}
-      onPendingFees={setStudentPendingFees}
+        open={openPendingFees}
+        onClose={() => setOpenPendingFees(false)}
+        SID={SID}
+        onPendingFees={setStudentPendingFees}
       />
+
+      {/* Profile details Modal */}
+      <Check_Student_Details
+      open={openProfile}
+      onClose={() => setOpenProfile(false)}
+      SID={SID}
+      />
+
+      {showLogout && <StudentLogout/>}
 
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}}) => {
