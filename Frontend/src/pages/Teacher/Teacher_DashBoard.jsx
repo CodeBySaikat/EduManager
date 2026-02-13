@@ -9,7 +9,7 @@ import {
   FaBullhorn,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
@@ -33,6 +33,41 @@ const Teacher_Dashboard = () => {
   const [openCheckNotices, setOpenCheckNotices] = useState(false);
 
   const [showLogout, setShowLogout] = useState(false);
+
+
+  //for right side profile and welcome card
+  const [teachName, setTeachName] = useState(""); //for name
+  const [now, setNow] = useState(new Date()); //for time and date
+
+  useEffect(() => {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if(user?.teacherName) {
+      setTeachName(user.teacherName);
+    };
+
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000)
+
+    return () => clearInterval(timer);
+
+  }, [])
+
+  // 🟢 NEW
+  const current_Date = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+  const current_Time = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
 
 
 
@@ -105,13 +140,15 @@ const Teacher_Dashboard = () => {
             EduManager
           </div>
 
-          <div
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={() => navigate("/teacher/profile")}
-          >
-            <span className="text-sm font-medium">Profile</span>
-            <div className="w-9 h-9 bg-[#00a6fb] text-white rounded-full flex items-center justify-center font-semibold">
-              T
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="font-semibold">Profile</p>
+              <p className="text-sm text-gray-500">
+                {teachName || "Teacher"}
+              </p>
+            </div>
+            <div className="h-10 w-10 rounded-full bg-blue-300 flex items-center justify-center font-bold text-white">
+              {teachName ? teachName.charAt(0).toUpperCase() : "T"}
             </div>
           </div>
 
@@ -121,9 +158,11 @@ const Teacher_Dashboard = () => {
         <div className="bg-blue-800 rounded-2xl p-6 text-white flex justify-between items-center mb-8 shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
 
           <div>
-            <p className="text-sm opacity-90 mb-1">September 2025</p>
+            <p className="text-lg text-yellow-300 opacity-90 mb-1">
+              {current_Date} | {current_Time}
+            </p>
             <h2 className="text-2xl font-semibold mb-1">
-              Welcome Saikat
+              Welcome Back {teachName || "Teacher"}
             </h2>
             <p className="text-sm opacity-90">
               Manage students, courses and notices from here.

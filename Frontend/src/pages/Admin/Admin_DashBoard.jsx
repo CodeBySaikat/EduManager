@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -20,8 +20,7 @@ import DashboardCounts from "./dashboard_counts.jsx";
 
 // Main dashboard component
 const Admin_Dashboard = () => {
-  const navigate = useNavigate();
-
+  
   //for dropdown menus
   const [open, setOpen] = useState({
     student: false,
@@ -35,6 +34,7 @@ const Admin_Dashboard = () => {
   setOpen((p) => ({ ...p, [key]: !p[key] }));
 
 
+  const navigate = useNavigate();
 
   //handle resister new admin
   const [adminId, setAdminId] = useState("");
@@ -92,6 +92,36 @@ const Admin_Dashboard = () => {
   //for total counts
   const [refreshKey, setRefreshKey] = useState(0);
 
+  //for Right side profile and welcome card
+  const [adminName, setAdminName] = useState(""); //for name
+  const [now, setNow] = useState(new Date()); //for new date and time
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if(user?.name) {
+      setAdminName(user.name);
+    }
+
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000)
+
+    return () => clearInterval(timer);
+
+  }, [])
+
+  const current_Date = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  });
+
+  const current_Time = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  })
 
 
 
@@ -298,19 +328,25 @@ const Admin_Dashboard = () => {
           <div className="flex items-center gap-3">
             <div className="text-right">
               <p className="text-sm font-medium">Profile</p>
-              <p className="text-xs text-slate-500">Saikat</p>
+              <p className="text-xs text-slate-500">
+                {adminName || "Admin"}
+              </p>
             </div>
             <div className="h-9 w-9 rounded-full bg-blue-500 text-white flex items-center justify-center">
-              A
+              {adminName? adminName.charAt(0).toLocaleUpperCase() : "A"}
             </div>
           </div>
         </div>
 
         {/* ===== Welcome panel (same style as your image) ===== */}
-        <div className="mb-10 rounded-2xl bg-linear-to-r from-blue-600 to-blue-500 p-6 text-white relative overflow-hidden">
-          <p className="text-sm opacity-90">September 2025</p>
+        <div className="mb-10 rounded-2xl bg-linear-to-r from-blue-800 to-blue-700 p-6 text-white relative overflow-hidden">
+          <p className="text-lg text-yellow-300 opacity-90"
+          // style={{color: '#003459'}}
+          >
+            {current_Date} | {current_Time}
+          </p>
           <h2 className="text-2xl font-semibold mt-1">
-            Welcome back, Saikat!
+            Welcome back, {adminName || "Admin"}
           </h2>
           <p className="text-sm mt-1 opacity-90">
             Manage students, teachers, classes, courses and notices from here.

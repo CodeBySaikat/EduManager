@@ -236,18 +236,52 @@ const Student_Dashboard = () => {
 
 
 
-
+  //for left side profile button
   const [openProfile, setOpenProfile] = useState(false);
 
   const [showLogout, setShowLogout] = useState(false);
 
 
+
+  //for welcome card and right side profile
+  const [studentName, setStudentName] = useState(""); //for name
+  const [now, setNow] = useState(new Date()); //for date and time
+
+  // 🟢 NEW
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user?.name) {
+      setStudentName(user.name);
+    }
+
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  
+  const current_Date = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
+  const current_Time = now.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+
+
+
   const handleMenuClick = (name) => {
     console.log("Clicked:", name);
   };
-
-
-
 
 
   return (
@@ -327,10 +361,12 @@ const Student_Dashboard = () => {
           <div className="flex items-center gap-4">
             <div className="text-right">
               <p className="font-semibold">Profile</p>
-              <p className="text-sm text-gray-500">Saikat</p>
+              <p className="text-sm text-gray-500">
+                {studentName || "Student"}
+              </p>
             </div>
             <div className="h-10 w-10 rounded-full bg-blue-300 flex items-center justify-center font-bold text-white">
-              A
+              {studentName ? studentName.charAt(0).toLocaleUpperCase() : "S"}
             </div>
           </div>
         </div>
@@ -338,9 +374,11 @@ const Student_Dashboard = () => {
         {/* WELCOME CARD */}
         <div className="bg-linear-to-r from-sky-700 to-sky-500 text-white rounded-2xl p-6 mb-6 flex justify-between items-center">
           <div>
-            <p className="text-sm opacity-80">September 2025</p>
+            <p className="text-lg text-cyan-200 opacity-80">
+              {current_Date} | {current_Time}
+            </p>
             <h2 className="text-2xl font-bold mt-2">
-              Welcome back, Saikat!
+              Welcome Back, {studentName || "Student"}
             </h2>
             <p className="text-sm mt-1 opacity-90">
               Manage students, teachers, courses and notices from here.
