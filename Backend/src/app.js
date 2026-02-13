@@ -20,10 +20,11 @@ app.use(cookieParser())
 import adminRouter from "./routes/admin.routes.js"
 import studentRouter from "./routes/student.routes.js"
 import teacherRouter from "./routes/teacher.routes.js"
-
+import dashboardRouter from "./routes/dashboard.routes.js"
 
 app.use("/admin", adminRouter)
 app.use("/student", studentRouter)
 app.use("/teacher", teacherRouter)
+app.use("/dashboard", dashboardRouter)
 
 export {app}
