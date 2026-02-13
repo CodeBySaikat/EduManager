@@ -20,6 +20,9 @@ import Mark_Attendance from "./mark_attendance.jsx";
 import Check_Notices from "./show_notices.jsx";
 
 
+import TeacherLogout
+ from "./teacher_logout.jsx";
+
 
 const Teacher_Dashboard = () => {
 
@@ -28,6 +31,8 @@ const Teacher_Dashboard = () => {
   const [showAssignGrade, setShowAssignGrade] = useState(false);
   const [showMarkAttendance, setShowMarkAttendance] = useState(false);
   const [openCheckNotices, setOpenCheckNotices] = useState(false);
+
+  const [showLogout, setShowLogout] = useState(false);
 
 
 
@@ -78,8 +83,8 @@ const Teacher_Dashboard = () => {
         {/* Logout */}
         <div className="p-6">
           <button
-            onClick={() => navigate("/login")}
             className="w-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 transition rounded-xl py-2 font-medium"
+            onClick={() => setShowLogout(true)}
           >
             <FaSignOutAlt />
             Logout
@@ -211,6 +216,9 @@ const Teacher_Dashboard = () => {
         open={openCheckNotices}
         onClose={() => setOpenCheckNotices(false)}
       />
+
+      {/* for logout */}
+      {showLogout && <TeacherLogout/>}
 
     </div>
   );

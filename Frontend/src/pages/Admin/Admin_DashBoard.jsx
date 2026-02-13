@@ -12,6 +12,9 @@ import Course_ActionButtons from "./Helper/course_helper.jsx";
 import Notice_buttons from "./Helper/notice_helper.jsx";
 
 
+import AdminLogout from "./admin_logout.jsx";
+
+
 
 
 
@@ -83,6 +86,8 @@ const Admin_Dashboard = () => {
 
 
 
+  //for admin logout
+  const [showLogout, setShowLogout] = useState(false);
 
 
 
@@ -254,8 +259,8 @@ const Admin_Dashboard = () => {
 
         <div className="p-4 border-t border-blue-500">
           <button
-            onClick={() => navigate("/logout")}
             className="w-full bg-white text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition"
+            onClick={() => setShowLogout(true)}
           >
             Logout
           </button>
@@ -409,6 +414,11 @@ const Admin_Dashboard = () => {
           </div>
         </div>
       </main>
+
+
+      {/* for logout */}
+      {showLogout && <AdminLogout/>}
+
     </div>
   );
 };
