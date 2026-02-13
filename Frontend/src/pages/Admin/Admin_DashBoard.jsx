@@ -13,7 +13,7 @@ import Notice_buttons from "./Helper/notice_helper.jsx";
 
 
 import AdminLogout from "./admin_logout.jsx";
-
+import DashboardCounts from "./dashboard_counts.jsx";
 
 
 
@@ -89,6 +89,10 @@ const Admin_Dashboard = () => {
   //for admin logout
   const [showLogout, setShowLogout] = useState(false);
 
+  //for total counts
+  const [refreshKey, setRefreshKey] = useState(0);
+
+
 
 
   return (
@@ -152,7 +156,9 @@ const Admin_Dashboard = () => {
                 open.student ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Student_ActionButtons/>
+              <Student_ActionButtons
+              onChange={() => setRefreshKey((p) => p+1)}
+              />
             </div>
           </div>
 
@@ -177,7 +183,9 @@ const Admin_Dashboard = () => {
                 open.teacher ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Teacher_ActionButtons/>
+              <Teacher_ActionButtons
+              onChange={() => setRefreshKey((p) => p+1)}
+              />
             </div>
           </div>
 
@@ -202,7 +210,9 @@ const Admin_Dashboard = () => {
                 open.class ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Class_ActionButtons/>
+              <Class_ActionButtons
+              onChange={() => setRefreshKey((p) => p+1)}
+              />
             </div>
           </div>
 
@@ -227,7 +237,9 @@ const Admin_Dashboard = () => {
                 open.course ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Course_ActionButtons/>
+              <Course_ActionButtons
+              onChange={() => setRefreshKey((p) => p+1)}
+              />
             </div>
           </div>
 
@@ -252,7 +264,9 @@ const Admin_Dashboard = () => {
                 open.notice ? "max-h-40" : "max-h-0"
               } overflow-hidden`}
             >
-              <Notice_buttons/>
+              <Notice_buttons
+              onChange={() => setRefreshKey((p) => p+1)}
+              />
             </div>
           </div>
         </div>
@@ -374,44 +388,8 @@ const Admin_Dashboard = () => {
           </div>
 
           {/* Totals section */}
-          <div className="grid grid-cols-2 grid-rows-3 gap-6">
+          <DashboardCounts refreshKey={refreshKey}/>
 
-            {/* Student */}
-            <div className="bg-white rounded-2xl shadow p-5">
-              <p className="text-sm text-gray-500">Total Students</p>
-              <h3 className="text-3xl font-bold mt-2">0</h3>
-            </div>
-
-            {/* Teacher */}
-            <div className="bg-white rounded-2xl shadow p-5">
-              <p className="text-sm text-gray-500">Total Teachers</p>
-              <h3 className="text-3xl font-bold mt-2">0</h3>
-            </div>
-
-            {/* Class */}
-            <div className="bg-white rounded-2xl shadow p-5">
-              <p className="text-sm text-gray-500">Total Classes</p>
-              <h3 className="text-3xl font-bold mt-2">0</h3>
-            </div>
-
-            {/* Course */}
-            <div className="bg-white rounded-2xl shadow p-5">
-              <p className="text-sm text-gray-500">Total Courses</p>
-              <h3 className="text-3xl font-bold mt-2">0</h3>
-            </div>
-
-            {/* Notice – bigger & right corner */}
-            <div className="bg-white rounded-2xl shadow p-6 col-span-2 row-span-2 flex flex-col justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Total Notices</p>
-                <h3 className="text-4xl font-bold mt-2">0</h3>
-              </div>
-
-              <div className="text-sm text-gray-500 mt-6">
-                Latest notices and announcements will be shown here.
-              </div>
-            </div>
-          </div>
         </div>
       </main>
 
