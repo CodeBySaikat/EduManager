@@ -51,11 +51,7 @@ const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}})
           // ignore saturday & sunday -> in attendance
           const isWeekend = day === 0 || day === 6;
 
-          if(isWeekend) {
-            return false;
-          }
-
-          return d <= today;
+          return !isWeekend && d <= today;
         });
 
         const total = tillToday.length;
@@ -86,13 +82,22 @@ const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}})
   // -------------------------------
   const attendanceMap = useMemo(() => {
     const map = {};
+
     records.forEach((r) => {
       const d = new Date(r.date);
       d.setHours(0, 0, 0, 0);
+
+      const day = d.getDay();
+      const isWeekend = day === 0 || day === 6;
+
+      if(isWeekend) return;
+
       const key = d.toISOString().split("T")[0];
       map[key] = r.present;
     });
+
     return map;
+
   }, [records]);
 
   // -------------------------------
@@ -249,21 +254,28 @@ const Check_Student_Attendance = ({open, onClose, SID, onPercentage = () => {}})
 
               const isFuture = cellDate > today;
 
-              const isWeekend =
-                cellDate.getDay() === 0 || cellDate.getDay() === 6;
+              const isWeekend = 
+              cellDate.getDay() === 0 || cellDate.getDay() === 6;
 
-              const status = isFuture ? undefined : attendanceMap[key];
+              const status = 
+              isFuture || isWeekend ? 
+              undefined : attendanceMap[key];
 
               let bg = "bg-gray-100 text-gray-800";
 
-              if (!isFuture && isWeekend) {
+              if (isWeekend && !isFuture) {
                 bg = "bg-indigo-100 text-indigo-800";
               }
+              else if (isFuture) {
+                bg = "bg-gray-200 text-gray-400";
+              }
+              else if (status === true) {
+                bg = "bg-green-500 text-white";
+              }
+              else if (status === false) {
+                bg = "bg-red-500 text-white";
+              }
 
-              if (status === true) bg = "bg-green-500 text-white";
-              if (status === false) bg = "bg-red-500 text-white";
-
-              if (isFuture) bg = "bg-gray-200 text-gray-400";
 
               return (
                 <div

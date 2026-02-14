@@ -379,7 +379,7 @@ const Student_Dashboard = () => {
         {/* WELCOME CARD */}
         <div className="bg-linear-to-r from-sky-700 to-sky-500 text-white rounded-2xl p-6 mb-6 flex justify-between items-center">
           <div>
-            <p className="text-lg text-cyan-200 opacity-80">
+            <p className="text-lg text-red-100 opacity-80">
               {current_Date} | {current_Time}
             </p>
             <h2 className="text-2xl font-bold mt-2">

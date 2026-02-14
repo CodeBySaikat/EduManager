@@ -30,6 +30,16 @@ const Mark_Attendance = ({ open, onClose }) => {
         return;
       }
 
+      //for Protect to not mark Weekend days
+      const seletedDate = new Date(date);
+      const day = seletedDate.getDay();
+
+      if(day === 0 || day === 6) {
+        setError("Attendance Cannot be Marked On Weekend Days");
+        setLoading(false);
+        return;
+      }
+
       const res = await axios.post(
         "http://localhost:8000/teacher/markAttendance",
         {
@@ -107,12 +117,24 @@ const Mark_Attendance = ({ open, onClose }) => {
 
                 {/* Date */}
                 <input
+                  className="w-full border p-2 rounded mb-3"
+                  required
                   type="date"
                   value={date}
                   max={new Date().toISOString().split("T")[0]}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full border p-2 rounded mb-3"
-                  required
+                  // onChange={(e) => setDate(e.target.value)}
+                  onChange={(e) => {
+                    const seletedDate = new Date(e.target.value);
+                    const day = seletedDate.getDay();
+                    
+                    if(day === 0 || day === 6) {
+                      setError("Weekend Marked Not Allowed");
+                      return;
+                    }
+
+                    setError("");
+                    setDate(e.target.value);
+                  }}
                 />
 
                 {/* Present / Absent */}
