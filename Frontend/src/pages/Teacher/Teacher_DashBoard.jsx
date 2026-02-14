@@ -20,13 +20,15 @@ import Mark_Attendance from "./mark_attendance.jsx";
 import Check_Notices from "./show_notices.jsx";
 
 
-import TeacherLogout
- from "./teacher_logout.jsx";
+import TeacherLogout from "./teacher_logout.jsx";
+
+import Teacher_ChangePassword from "./teacher_changePassword.jsx";
 
 
 const Teacher_Dashboard = () => {
 
   const navigate = useNavigate();
+
 
   const [showAssignGrade, setShowAssignGrade] = useState(false);
   const [showMarkAttendance, setShowMarkAttendance] = useState(false);
@@ -69,6 +71,10 @@ const Teacher_Dashboard = () => {
   });
 
 
+  //for changePassword
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+
+
 
 
   return (
@@ -97,7 +103,7 @@ const Teacher_Dashboard = () => {
             <SidebarItem
               icon={<FaKey />}
               label="Change Password"
-              onClick={() => navigate("/teacher/change-password")}
+              onClick={() => setOpenChangePassword(true)}
             />
 
             <SidebarItem
@@ -258,6 +264,13 @@ const Teacher_Dashboard = () => {
 
       {/* for logout */}
       {showLogout && <TeacherLogout/>}
+
+
+      {/* for password change */}
+      <Teacher_ChangePassword
+      open={openChangePassword}
+      onClose={() => setOpenChangePassword(false)}
+      />
 
     </div>
   );

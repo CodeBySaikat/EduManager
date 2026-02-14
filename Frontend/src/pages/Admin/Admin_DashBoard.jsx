@@ -15,6 +15,7 @@ import Notice_buttons from "./Helper/notice_helper.jsx";
 import AdminLogout from "./admin_logout.jsx";
 import DashboardCounts from "./dashboard_counts.jsx";
 
+import Admin_ChangePassword from "./admin_changePassword.jsx";
 
 
 
@@ -92,6 +93,12 @@ const Admin_Dashboard = () => {
   //for total counts
   const [refreshKey, setRefreshKey] = useState(0);
 
+  //for change Password
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+  
+
+
+
   //for Right side profile and welcome card
   const [adminName, setAdminName] = useState(""); //for name
   const [now, setNow] = useState(new Date()); //for new date and time
@@ -164,6 +171,14 @@ const Admin_Dashboard = () => {
           >
             Profile
           </button>
+
+          <button
+            className="w-full text-left px-6 py-3 hover:bg-blue-500/70 rounded-r-full transition"
+            onClick={() => setOpenChangePassword(true)}
+          >
+            Change Password
+          </button>
+
 
           {/* Student */}
           <div className="mx-2 rounded-xl overflow-hidden bg-blue-600">
@@ -432,6 +447,12 @@ const Admin_Dashboard = () => {
 
       {/* for logout */}
       {showLogout && <AdminLogout/>}
+
+      {/* For Change Password */}
+      <Admin_ChangePassword
+      open={openChangePassword}
+      onClose={() => setOpenChangePassword(false)}
+      />
 
     </div>
   );

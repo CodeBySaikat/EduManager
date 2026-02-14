@@ -8,6 +8,7 @@ import Check_Notices from "./check_notices.jsx";
 import Check_Student_Details from "./check_details.jsx";
 
 import StudentLogout from "./student_logout.jsx";
+import Student_ChangePassword from "./student_changePassword.jsx";
 
 
 
@@ -247,8 +248,6 @@ const Student_Dashboard = () => {
   const [studentName, setStudentName] = useState(""); //for name
   const [now, setNow] = useState(new Date()); //for date and time
 
-  // 🟢 NEW
-
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -276,6 +275,9 @@ const Student_Dashboard = () => {
     second: "2-digit",
   });
 
+
+  //for Change Password
+  const [openChangePassword, setOpenChangePassword] = useState(false);
 
 
 
@@ -322,6 +324,9 @@ const Student_Dashboard = () => {
                   }
                   else if(item === "Profile") {
                     setOpenProfile(true);
+                  }
+                  else if(item === "Change Password") {
+                    setOpenChangePassword(true);
                   }
                   else {
                     handleMenuClick(item);
@@ -474,7 +479,15 @@ const Student_Dashboard = () => {
       SID={SID}
       />
 
+      {/* for logout */}
       {showLogout && <StudentLogout/>}
+
+
+      {/* for Password Change */}
+      <Student_ChangePassword
+      open={openChangePassword}
+      onClose={() => setOpenChangePassword(false)}
+      />
 
     </div>
   );
