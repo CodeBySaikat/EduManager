@@ -130,9 +130,15 @@ const Student_Dashboard = () => {
   // =====================================================
 
   const [openGrades, setOpenGrades] = useState(false);
-  const [overallGrade, setOverallGrade] = useState(
-    localStorage.getItem("overallGrade") || "0"
-  );
+  const [overallGrade, setOverallGrade] = useState("No Grades");
+
+  useEffect(() => {
+    if(SID) {
+      setOverallGrade("No Grades");
+      localStorage.removeItem("overallGrade");
+    }
+
+  }, [SID])
 
   useEffect(() => {
 
@@ -165,7 +171,8 @@ const Student_Dashboard = () => {
           return "F";
         };
 
-        let overallLetter = "-";
+        // let overallLetter = "-";
+        let overallLetter = "No Grades";
 
         if (data.length > 0) {
 
@@ -183,6 +190,8 @@ const Student_Dashboard = () => {
 
       } catch (err) {
         console.error("Failed to overall grade", err);
+
+        setOverallGrade("No Grades");
       }
     };
 
@@ -396,7 +405,7 @@ const Student_Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {[
             { title: "Total Attendance", value: `${attendancePercentage}%` },
-            { title: "Overall Grades", value: `${overallGrade}` || 0 },
+            { title: "Overall Grades", value:  overallGrade},
             { title: "Pending Fees", value: studentPendingFees },
           ].map((item, index) => (
             <div

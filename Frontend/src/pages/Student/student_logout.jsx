@@ -32,6 +32,9 @@ const StudentLogout = () => {
           },
         );
 
+        // ✅ ADD THIS LINE HERE (IMPORTANT FIX)
+        localStorage.clear();
+
         // show success popup
         setOpen(true);
 

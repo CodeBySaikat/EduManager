@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const Check_Student_Grades = ({ open, onClose, SID, onOverallGrade }) => { // ðŸ”´ CHANGED
+const Check_Student_Grades = ({ open, onClose, SID, onOverallGrade }) => {
 
   const [grades, setGrades] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,8 @@ const Check_Student_Grades = ({ open, onClose, SID, onOverallGrade }) => { // ðŸ
         // overall grade from grade points
         // =========================================
 
-        let overallLetter = "-";
+        // let overallLetter = "-";
+        let overallLetter = "No Grades";
 
         if (data.length > 0) {
 
@@ -71,9 +72,32 @@ const Check_Student_Grades = ({ open, onClose, SID, onOverallGrade }) => { // ðŸ
         }
 
       } catch (err) {
-        setError(
-          err?.response?.data?.message || "Failed to load grades"
-        );
+        // setError(
+        //   err?.response?.data?.message || "Failed to load grades"
+        // );
+
+        //==> if no grades exist, don't show error
+        if (
+          err?.response?.status === 404 ||
+          err?.response?.data?.message === "No grades found"
+        ) {
+          setGrades([]); // treat as empty grades
+
+          const overallLetter = "No Grades";
+
+          localStorage.setItem("overallGrade", overallLetter);
+
+          if (onOverallGrade) {
+            onOverallGrade(overallLetter);
+          }
+
+          setError(""); // clear error
+
+        } else {
+          // real error
+          setError("Failed to load grades");
+        }
+
       } finally {
         setLoading(false);
       }
